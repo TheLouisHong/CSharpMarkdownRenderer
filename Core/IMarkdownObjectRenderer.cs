@@ -1,6 +1,6 @@
-﻿using Markdown2HTML.MarkdownObject;
+﻿using Markdown2HTML.Core.MarkdownObject;
 
-namespace Markdown2HTML
+namespace Markdown2HTML.Core
 {
     public interface IMarkdownObjectRenderer
     {

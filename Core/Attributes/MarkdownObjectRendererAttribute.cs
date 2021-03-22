@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Markdown2HTML.Attributes
+namespace Markdown2HTML.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class MarkdownObjectRendererAttribute : Attribute

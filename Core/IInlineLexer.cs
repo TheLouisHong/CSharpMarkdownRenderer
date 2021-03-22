@@ -1,6 +1,6 @@
-﻿using Markdown2HTML.Token;
+﻿using Markdown2HTML.Core.Tokens;
 
-namespace Markdown2HTML
+namespace Markdown2HTML.Core
 {
     public interface IInlineLexer
     {

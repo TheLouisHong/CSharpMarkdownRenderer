@@ -1,4 +1,4 @@
-﻿namespace Markdown2HTML.MarkdownObject
+﻿namespace Markdown2HTML.Core.MarkdownObject
 {
     public interface IMarkdownObject
     {

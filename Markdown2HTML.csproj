@@ -54,7 +54,8 @@
     <Compile Include="Core\IInlineLexer.cs" />
     <Compile Include="Core\IMarkdownObjectRenderer.cs" />
     <Compile Include="Core\IMarkdownTokenParser.cs" />
-    <Compile Include="Core\TokenTypes.cs" />
+    <Compile Include="Core\TokenTypeHelper.cs" />
+    <Compile Include="Core\Debug\Logger.cs" />
     <Compile Include="Lexers\BlockLexers\AtxHeaderLexer.cs" />
     <Compile Include="Core\MarkdownObject\IMarkdownObject.cs" />
     <Compile Include="Core\Tokens\MarkdownToken.cs" />
@@ -62,18 +63,28 @@
     <Compile Include="Core\LexerEngine.cs" />
     <Compile Include="Core\MarkdownEngine.cs" />
     <Compile Include="Core\ParserEngine.cs" />
-    <Compile Include="Parsers\HeaderParser.cs" />
+    <Compile Include="Lexers\BlockLexerOrderHelper.cs" />
+    <Compile Include="Lexers\BlockLexers\ListLexer.cs" />
+    <Compile Include="Lexers\BlockLexers\NewlineLexer.cs" />
+    <Compile Include="Lexers\BlockLexers\ParagraphLexer.cs" />
+    <Compile Include="Parsers\AtxHeaderParser.cs" />
+    <Compile Include="Parsers\ParagraphParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RenderEngine.cs" />
-    <Compile Include="Renderers\HeaderRenderer.cs" />
+    <Compile Include="Renderers\AtxHeaderRenderer.cs" />
+    <Compile Include="Renderers\ParagraphRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="mytest.md" />
     <None Include="packages.config" />
     <None Include="test.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Lexers\InlineLexers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="myout.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,44 +1,28 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Markdown2HTML.Attributes;
-using Markdown2HTML.Token;
+using Markdown2HTML.Core;
+using Markdown2HTML.Core.Attributes;
+using Markdown2HTML.Core.Tokens;
 
 namespace Markdown2HTML.Lexers.BlockLexers
 {
 
-    [BlockLexer]
+    [BlockLexer( order: (int) BlockLexerOrderHelper.AtxHeaderLexer) ]
     public class AtxHeaderLexer : IBlockLexer
     {
         //group 1: #
         //group 2: text with space
-        Regex match = new Regex(@"^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)");
+        private readonly Regex _match = new Regex(@"^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)");
 
 
         public Match Match(string markdownString)
         {
-            return match.Match(markdownString);
+            return _match.Match(markdownString);
         }
 
-        public MarkdownToken Lex(ref string markdownString, Match match = null)
+        public MarkdownToken Lex(string markdownString, Match match)
         {
-            if (match == null)
-            {
-                match = Match(markdownString);
-            }
-
-            //for (int i = 0; i < match.Length; i++)
-            //{
-            //    Console.WriteLine($"{i} : {match.Groups[i]}");
-            //}
-
-            // consume the captured string
-            markdownString = markdownString.Substring(match.Length);
-
-            MarkdownToken token = new MarkdownToken();
-
-            token.Text = match.Groups[0].Value;
-            token.TokenType = TokenTypes.HEADER;
-
+            MarkdownToken token = new MarkdownToken(TokenTypeHelper.HEADER ,match.Groups[0].Value, match);
             return token;
         }
     }

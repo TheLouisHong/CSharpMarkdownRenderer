@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Markdown2HTML.Attributes;
-using Markdown2HTML.MarkdownObject;
-using Markdown2HTML.Token;
+using Markdown2HTML.Core.Attributes;
+using Markdown2HTML.Core.Debug;
+using Markdown2HTML.Core.MarkdownObject;
+using Markdown2HTML.Core.Tokens;
 
-namespace Markdown2HTML
+namespace Markdown2HTML.Core
 {
     public class ParserEngine
     {
@@ -31,12 +32,12 @@ namespace Markdown2HTML
                     }
                     else
                     {
-                        Console.Error.WriteLine($"{parser.GetType().Name}.Parse returned null.");
+                        Logger.LogError($"{parser.GetType().Name}.Parse returned null.");
                     }
                 }
                 else
                 {
-                    Console.Error.WriteLine($"Missing Parser for {token.TokenType}.");
+                    Logger.LogError($"Missing Parser for {token.TokenType}.");
                 }
             }
 

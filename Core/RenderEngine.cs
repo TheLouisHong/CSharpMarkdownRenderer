@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Markdown2HTML.Attributes;
-using Markdown2HTML.MarkdownObject;
+using Markdown2HTML.Core.Attributes;
+using Markdown2HTML.Core.Debug;
+using Markdown2HTML.Core.MarkdownObject;
 
-namespace Markdown2HTML
+namespace Markdown2HTML.Core
 {
     public class RenderEngine
     {
@@ -29,7 +30,7 @@ namespace Markdown2HTML
                 }
                 else
                 {
-                    Console.Error.WriteLine($"Missing Renderer for {mdObj.GetType().Name}.");
+                    Logger.LogError($"Missing Renderer for {mdObj.GetType().Name}.");
                 }
             }
 

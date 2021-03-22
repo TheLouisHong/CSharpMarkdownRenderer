@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Markdown2HTML.Attributes;
-using Markdown2HTML.Token;
+using System.Text;
+using Markdown2HTML.Core.Attributes;
+using Markdown2HTML.Core.Debug;
+using Markdown2HTML.Core.Tokens;
 
-namespace Markdown2HTML
+namespace Markdown2HTML.Core
 {
     public class LexerEngine
     {
-        private List<IBlockLexer> _blockLexers = new List<IBlockLexer>();
+        private List<KeyValuePair<int, IBlockLexer>> _blockLexers = new List<KeyValuePair<int, IBlockLexer>>();
         private List<IInlineLexer> _inlineLexers = new List<IInlineLexer>();
 
         public LexerEngine()
@@ -28,11 +30,18 @@ namespace Markdown2HTML
 
         public List<MarkdownToken> Lex(string markdownString)
         {
+            Logger.LogVerbose("...Lexing");
             markdownString = Preprocess(markdownString);
 
             var tokens = new List<MarkdownToken>();
+            Logger.LogVerbose("...LexingBlocks");
+
             LexBlocks(markdownString, tokens);
+            Logger.LogVerbose("...LexingInlines");
+
             LexInline(tokens);
+
+            LogTokens(tokens);
 
             return tokens;
         }
@@ -43,21 +52,24 @@ namespace Markdown2HTML
                 bool processing = false;
                 foreach (var blockLexer in _blockLexers)
                 {
-                    var group = blockLexer.Match(markdownString);
-                    if (group != null && group.Success)
+                    var match = blockLexer.Value.Match(markdownString);
+                    if (match != null && match.Success)
                     {
-                        var token = blockLexer.Lex(ref markdownString, group);
+                        var token = blockLexer.Value.Lex(markdownString, match);
+                        markdownString = markdownString.Substring(match.Length);
                         if (token != null)
                         {
                             tokens.Add(token);
                             processing = true;
+                            break; // 
                         }
                     }
                 }
 
                 if (!processing)
                 {
-                    Console.Error.WriteLine("Infinite loop detected in Lexer.");
+                    Logger.LogError("Infinite loop detected in Lexer.");
+                    Logger.LogError($"Discarding String: \n {markdownString}");
                     break;
                 }
             }
@@ -88,8 +100,8 @@ namespace Markdown2HTML
 
             foreach (var lexersType in blockLexersTypes)
             {
-                var lexer = (IBlockLexer) Activator.CreateInstance(lexersType.Type);
-                _blockLexers.Add(lexer);
+                var lexer = (IInlineLexer) Activator.CreateInstance(lexersType.Type);
+                _inlineLexers.Add(lexer);
             }
 
         }
@@ -108,9 +120,31 @@ namespace Markdown2HTML
             foreach (var lexersType in blockLexersTypes)
             {
                 var lexer = (IBlockLexer) Activator.CreateInstance(lexersType.Type);
-                _blockLexers.Add(lexer);
+                _blockLexers.Add(new KeyValuePair<int, IBlockLexer>(lexersType.Attributes.First().Order, lexer));
             }
 
+            _blockLexers.Sort((a, b) =>
+            {
+                if (a.Key > b.Key)
+                {
+                    return 1;
+                }
+                if (a.Key < b.Key)
+                {
+                    return -1;
+                }
+                return 0;
+            });
+        }
+
+        private void LogTokens(IEnumerable<MarkdownToken> tokens)
+        {
+            var sb = new StringBuilder();
+            foreach (var token in tokens)
+            {
+                sb.AppendLine(token.ToString() + "\n----------------------\n");
+            } 
+            Logger.LogVerbose("Lexed Tokens: \n" + sb);
         }
     }
 }

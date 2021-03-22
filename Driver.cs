@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Markdown2HTML.Core;
 
 
 namespace Markdown2HTML
@@ -41,6 +42,18 @@ namespace Markdown2HTML
 
             string caseString = File.ReadAllText(TestFilePath);
             _testCases = JsonConvert.DeserializeObject<List<TestCase>>(caseString);
+
+            foreach (var @case in _testCases)
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.WriteLine(@case.example);
+                Console.WriteLine(@case.section);
+                Console.WriteLine("==============================");
+                Console.ResetColor();
+                Console.WriteLine(@case.markdown);
+                Console.WriteLine("------------------------------");
+                Console.WriteLine(@case.html);
+            }
         }
 
         public void PrintAllTestCase()
@@ -83,6 +96,7 @@ namespace Markdown2HTML
             File.WriteAllText($"my_debug_output/out{example_id}", _testCases[example_id].html);
         }
 
+
     }
 
     class Driver
@@ -92,6 +106,8 @@ namespace Markdown2HTML
             var driver = new UnitTestDriver();
             driver.LoadTestCase();
 
+
+            /*
             bool success = int.TryParse(args[0], out int example_id);
             if (success)
             {
@@ -108,10 +124,9 @@ namespace Markdown2HTML
             {
                 Console.WriteLine($"Trying to read file {args[0]}...");
                 var mdHtml = new MarkdownEngine();
-                mdHtml.MarkdownToHtml(args[0], "myout");
+                mdHtml.MarkdownToHtml(args[0], "myout.html");
             }
-            Console.WriteLine("Press key to exit.");
-            Console.ReadKey(true);
+        */
         }
     }
 }

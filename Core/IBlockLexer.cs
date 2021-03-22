@@ -1,12 +1,11 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using Markdown2HTML.Token;
+﻿using System.Text.RegularExpressions;
+using Markdown2HTML.Core.Tokens;
 
-namespace Markdown2HTML
+namespace Markdown2HTML.Core
 {
     public interface IBlockLexer
     {
         Match Match(string markdownString);
-        MarkdownToken Lex(ref string markdownString, Match match = null);
+        MarkdownToken Lex(string markdownString, Match match);
     }
 }
