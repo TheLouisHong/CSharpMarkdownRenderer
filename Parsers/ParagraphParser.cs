@@ -1,4 +1,5 @@
-﻿using Markdown2HTML.Core;
+﻿using System.Text.RegularExpressions;
+using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.MarkdownObject;
 using Markdown2HTML.Core.Tokens;
@@ -7,12 +8,12 @@ namespace Markdown2HTML.Parsers
 {
     public class MarkdownParagraph : IMarkdownObject
     {
-        public MarkdownParagraph(string text)
-        {
-            Text = text;
-        }
+        public readonly string Content;
 
-        public string Text = "";
+        public MarkdownParagraph(string content)
+        {
+            Content = content;
+        }
     }
 
     [MarkdownTokenParser(TokenTypeHelper.PARAGRAPH)]
@@ -20,8 +21,7 @@ namespace Markdown2HTML.Parsers
     {
         public IMarkdownObject Parse(MarkdownToken token)
         {
-            var mbObj = new MarkdownParagraph(token.Text);
-            return mbObj;
+            return new MarkdownParagraph(token.Content);
         }
     }
 }

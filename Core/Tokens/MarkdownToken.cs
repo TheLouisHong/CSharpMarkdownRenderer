@@ -8,43 +8,28 @@ namespace Markdown2HTML.Core.Tokens
         /// <summary>
         /// type of token
         /// </summary>
-        public string TokenType; 
+        public readonly string TokenType; 
 
         /// <summary>
         /// String with inlined applied
         /// </summary>
-        public string Text;
+        public readonly string Content;
 
         /// <summary>
-        /// Optional, can be passed from the lexer to the parser for optimization.
+        /// Length of markdown consumed during lexing, including white space truncation.
         /// </summary>
-        public Match RegexMatch;
+        public readonly int RawLength;
 
-        public MarkdownToken(string tokenType, string text, Match regexMatch)
+        public MarkdownToken(string tokenType, string content, int rawLength)
         {
             TokenType = tokenType;
-            Text = text;
-            RegexMatch = regexMatch;
+            Content = content;
+            RawLength = rawLength;
         }
 
         public override string ToString()
         {
-            var stringBuilder = new StringBuilder($"TokenType: {TokenType}\n Text: {Text}\n Match: ");
-
-            if (RegexMatch == null)
-            {
-                stringBuilder.Append("none");
-            }
-            else
-            {
-                stringBuilder.Append('\n');
-                for (int i = 0; i < RegexMatch.Groups.Count; i++)
-                {
-                    stringBuilder.AppendLine($"    {i}:{RegexMatch.Groups[i]}");
-                }
-            }
-
-            return stringBuilder.ToString();
+            return $"TokenType: {TokenType}\n Content: {Content}\n RawLength: {RawLength}";
         }
     }
 }

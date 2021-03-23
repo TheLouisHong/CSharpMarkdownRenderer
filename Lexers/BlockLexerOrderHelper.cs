@@ -4,7 +4,7 @@
     {
         AtxHeaderLexer = 0,
         ListLexer,
-        Newline,
+        Emptyline,
         ParagraphLexer, // ParagraphLexer be last, to not catch all other types of blocks
     }
 }

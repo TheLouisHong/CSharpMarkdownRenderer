@@ -65,13 +65,15 @@
     <Compile Include="Core\ParserEngine.cs" />
     <Compile Include="Lexers\BlockLexerOrderHelper.cs" />
     <Compile Include="Lexers\BlockLexers\ListLexer.cs" />
-    <Compile Include="Lexers\BlockLexers\NewlineLexer.cs" />
+    <Compile Include="Lexers\BlockLexers\EmptyLineLexer.cs" />
     <Compile Include="Lexers\BlockLexers\ParagraphLexer.cs" />
     <Compile Include="Parsers\AtxHeaderParser.cs" />
+    <Compile Include="Parsers\EmptyLineParser.cs" />
     <Compile Include="Parsers\ParagraphParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RenderEngine.cs" />
     <Compile Include="Renderers\AtxHeaderRenderer.cs" />
+    <Compile Include="Renderers\EmptyLineRenderer.cs" />
     <Compile Include="Renderers\ParagraphRenderer.cs" />
   </ItemGroup>
   <ItemGroup>

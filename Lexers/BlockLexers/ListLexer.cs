@@ -6,22 +6,22 @@ using Markdown2HTML.Core.Tokens;
 
 namespace Markdown2HTML.Lexers.BlockLexers
 {
+
+    // 1. [0,3] starting spaces allowed.
+    // 2. first character must be bullet point regex: [*+-]|\d{1,0}[.)]
+    // 3. followed by at least one space
+    // 4. followed by optional amount of of any character [\s\S].
+    // 5. interrupt by two or more new lines.
+    // 6. interrupt by hr and link definition.
+
+    // 7. possible edge case pending // TODO
     [BlockLexer( (int) BlockLexerOrderHelper.ListLexer )]
     public class ListLexer : IBlockLexer
     {
-        private readonly Regex _match
-            = new Regex(
-                @"^( {0,3})(bullet) [\s\S]+?(?:\n{2,}(?! )(?! {0,3}bullet )\n*|\s*$)"
-                    .Replace("bullet", @"(?:[*+-]|\d{1,9}[.)])")
-                );
-        public Match Match(string markdownString)
+        public MarkdownToken Lex(string markdownString)
         {
-            return _match.Match(markdownString);
+            return null;
         }
 
-        public MarkdownToken Lex(string markdownString, Match match)
-        {
-            return new MarkdownToken(TokenTypeHelper.LIST, match.Value, match);
-        }
     }
 }

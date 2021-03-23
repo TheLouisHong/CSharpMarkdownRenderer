@@ -52,17 +52,12 @@ namespace Markdown2HTML.Core
                 bool processing = false;
                 foreach (var blockLexer in _blockLexers)
                 {
-                    var match = blockLexer.Value.Match(markdownString);
-                    if (match != null && match.Success)
+                    var token = blockLexer.Value.Lex(markdownString);
+                    if (token != null)
                     {
-                        var token = blockLexer.Value.Lex(markdownString, match);
-                        markdownString = markdownString.Substring(match.Length);
-                        if (token != null)
-                        {
-                            tokens.Add(token);
-                            processing = true;
-                            break; // 
-                        }
+                        markdownString = markdownString.Substring(token.RawLength);
+                        tokens.Add(token);
+                        processing = true;
                     }
                 }
 

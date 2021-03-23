@@ -5190,5 +5190,21 @@
     "start_line": 9365,
     "end_line": 9369,
     "section": "Textual content"
+  },
+  {
+    "markdown": "\n\nLine 1\nLine 2\n\n\n Not line 3\n\n\n Not line 4",
+    "html": "<p>Multiple     spaces</p>\n",
+    "example": 650,
+    "start_line": 0,
+    "end_line": 0,
+    "section": "Louis"
+  },
+  {
+    "markdown": "\n\nLine 1\nLine 2\n\n\n Not line 3\n\n\n",
+    "html": "<p>Multiple     spaces</p>\n",
+    "example": 651,
+    "start_line": 0,
+    "end_line": 0,
+    "section": "Louis"
   }
 ]

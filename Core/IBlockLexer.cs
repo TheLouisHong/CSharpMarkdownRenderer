@@ -5,7 +5,6 @@ namespace Markdown2HTML.Core
 {
     public interface IBlockLexer
     {
-        Match Match(string markdownString);
-        MarkdownToken Lex(string markdownString, Match match);
+        MarkdownToken Lex(string markdownString);
     }
 }

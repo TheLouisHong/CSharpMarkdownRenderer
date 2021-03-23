@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.Tokens;
@@ -7,25 +6,172 @@ using Markdown2HTML.Core.Tokens;
 namespace Markdown2HTML.Lexers.BlockLexers
 {
 
+    /// <summary>
+    /// 1. lowest in order. other blocks take priority.
+    /// 2. [0,3] starting spaces allowed for start lines.
+    /// 3. can be interrupted by these:
+    ///  3.1 hr
+    ///  3.2 heading
+    ///  3.3 blockquote
+    ///  3.4 fences
+    ///  3.5 list
+    ///  3.5 html
+    ///  3.6 whitespace line
+    ///  3.7 double newline
+    /// 5. arbitrary white spaces allowed for after the first
+    /// 6. consume up to, but not including, the last newline.
+    ///
+    /// philosophy: regex patterns must be nameable,
+    ///              no monster regex allowed. 
+    ///
+    /// Lexer: Sole purpose is to determines how many characters belongs inside the block.
+    ///        Do not do any rendering or parsing inside the lexer.
+    ///
+    /// CommonMark 0.29 Compliant (example 189-196)
+    ///     with the exception of 195, code block not implemented.
+    /// </summary>
     [BlockLexer( order: (int) BlockLexerOrderHelper.ParagraphLexer) ]
     public class ParagraphLexer : IBlockLexer
     {
-        private readonly Regex _match = new Regex(
-            // group 1 : match from the top,  
-            @"^([^\n]+(?:\n(?!heading|list| +\n)[^\n]+)*)"
+        /// <summary>
+        /// match block start, but not used to consume.
+        ///
+        /// regex explained:
+        ///     find one line, that isn't empty, with no longer then 3 spaces prefix, 
+        ///     ending in either a single newline or EOF.
+        ///
+        /// Due to difficulty with suffixing newline edge cases like single line vs multi-line.
+        /// </summary>
+        private readonly Regex _startLine = new Regex(
+            @"^[\s]{0,3}[^\s].*(?:\n|$)"
+            ); 
 
-                .Replace("heading", @" {0,3}#{1,6} ")
-                .Replace("list", @" {0,3}(?:[*+-]|1[.)]) ")
+        /// <summary>
+        /// used to find block ending.
+        ///
+        /// regex explained:
+        ///     find one line, with arbitrary amount of whitespace prefix, that isn't pure-whitespace,
+        ///     ending in exactly two newlines or EOF.
+        /// </summary>
+        private readonly Regex _endLine = new Regex(
+            @"^[\s]*[^\s].*(?=\n{2}|$)"
             );
-        public Match Match(string markdownString)
+
+        /// <summary>
+        /// Used to find pure whitespace lines.
+        /// 
+        /// regex explained:
+        ///     find lines that are purely empty or only white space, ending with arbitrary amount of new lines or EOF.
+        /// </summary>
+        private readonly Regex _emptyLine = new Regex(
+            @"^\s*(?:\n+|$)"
+            );
+
+
+        
+        /// <summary>
+        /// Header interrupts paragraphs. Use header lexer to check for interrupts.
+        /// </summary>
+        private readonly AtxHeaderLexer _headerInterrupt = new AtxHeaderLexer();
+        /// <summary>
+        /// List interrupts paragraphs. Use header lexer to check for interrupts.
+        /// </summary>
+        private readonly ListLexer _listLexer = new ListLexer();
+
+        /// <summary>
+        /// examples:
+        /// case 1: aaa\n
+        ///         ^ $
+        ///  1 height paragraph
+        ///
+        /// case 2: aaa\n\n
+        ///         ^ $
+        /// 1 height paragraph
+        ///
+        /// case 3: aaa\nbbb\n\n
+        ///         ^      $
+        ///  2+ height paragraph
+        ///
+        /// case 4: aaa  \nbbb
+        ///         ^        $
+        ///  br, because of 2+ spaces
+        ///
+        /// case 5: aaa
+        ///         ^ $
+        ///  end of file.
+        /// </summary>
+        /// <param name="markdownString"></param>
+        /// <returns></returns>
+        public MarkdownToken Lex(string markdownString)
         {
-            return _match.Match(markdownString);
+
+            // find starting line
+            var startMatch = _startLine.Match(markdownString);
+            // ... is this a paragraph?
+            if (!startMatch.Success) return null;
+
+            // discard startMatch, immediately match for ending.
+            int length = 0; // use to represent length of consumed string
+
+            // consume until the interrupted.
+            while (true)
+            {
+                var nextLine = markdownString.Substring(length);
+
+                // ... is ending line?
+                var endMatch = _endLine.Match(nextLine);
+                if (endMatch.Success)
+                {
+                    // ending line, aka last line. Finished.
+                    length += endMatch.Length;
+                    break;
+                }
+
+                // ... is empty line?
+                if (_emptyLine.Match(nextLine).Success)
+                {
+                    // skip and finish.
+                    break;
+                }
+
+                // interrupted by other blocks?
+                if (CheckBlockInterrupts(nextLine))
+                {
+                    // yes, skip and finish.
+                    break;
+                }
+
+                // consume one more line.
+                length += nextLine.IndexOf('\n') + 1;
+            }
+            // finish, lex token for lexer.
+            var result = markdownString.Substring(0, length);
+            return new MarkdownToken(TokenTypeHelper.PARAGRAPH, result, length);
         }
 
-        public MarkdownToken Lex(string markdownString, Match match)
+        /// <summary>
+        /// checks for block interrupts by other lexers.
+        /// </summary>
+        /// <param name="markdownString">Markdown Document String</param>
+        /// <returns></returns>
+        private bool CheckBlockInterrupts(string markdownString)
         {
-            var token = new MarkdownToken(TokenTypeHelper.PARAGRAPH, match.Groups[1].Value, match);
-            return token;
+            if (_headerInterrupt.Lex(markdownString) != null)
+            {
+                return true;
+            }
+            else if (_listLexer.Lex(markdownString) != null)
+            {
+                return true;
+            }
+            // TODO 
+            //  3.1 hr (missing)
+            //  3.2 heading
+            //  3.3 blockquote (missing)
+            //  3.4 fences (missing)
+            //  3.5 list
+            //  3.5 html (missing)
+            return false;
         }
     }
 }
