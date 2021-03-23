@@ -14,7 +14,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
     // 5. interrupt by two or more new lines.
     // 6. interrupt by hr and link definition.
 
-    // 7. possible edge case pending // TODO
+    // 7. possible edge case pending 
     [BlockLexer( (int) BlockLexerOrderHelper.ListLexer )]
     public class ListLexer : IBlockLexer
     {

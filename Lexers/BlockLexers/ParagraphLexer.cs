@@ -7,6 +7,9 @@ namespace Markdown2HTML.Lexers.BlockLexers
 {
 
     /// <summary>
+    /// A sequence of non-blank lines that cannot be interpreted as other kinds of blocks forms a paragraph.
+    /// The paragraph’s raw content is formed by concatenating the lines and removing initial and final whitespace.
+    /// 
     /// 1. lowest in order. other blocks take priority.
     /// 2. [0,3] starting spaces allowed for start lines.
     /// 3. can be interrupted by these:
@@ -27,8 +30,9 @@ namespace Markdown2HTML.Lexers.BlockLexers
     /// Lexer: Sole purpose is to determines how many characters belongs inside the block.
     ///        Do not do any rendering or parsing inside the lexer.
     ///
-    /// CommonMark 0.29 Compliant (example 189-196)
-    ///     with the exception of 195, code block not implemented.
+    /// CommonMark 0.29 Compliant (example 189-196), with exceptions.
+    ///     @TODO with the exception of 195, code block not implemented.
+    ///     @TODO example 48 causes bugs: consuming one too many newlines.
     /// </summary>
     [BlockLexer( order: (int) BlockLexerOrderHelper.ParagraphLexer) ]
     public class ParagraphLexer : IBlockLexer
@@ -37,13 +41,14 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// match block start, but not used to consume.
         ///
         /// regex explained:
-        ///     find one line, that isn't empty, with no longer then 3 spaces prefix, 
+        ///     find one line, that isn't all white space, 
         ///     ending in either a single newline or EOF.
         ///
-        /// Due to difficulty with suffixing newline edge cases like single line vs multi-line.
+        /// P.S.
+        /// Not used to consume due to difficulty with suffixing newline edge cases with single line vs multi-line.
         /// </summary>
         private readonly Regex _startLine = new Regex(
-            @"^[\s]{0,3}[^\s].*(?:\n|$)"
+            @"^[\s]*[^\s].*(?:\n|$)"
             ); 
 
         /// <summary>
@@ -76,6 +81,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// <summary>
         /// List interrupts paragraphs. Use header lexer to check for interrupts.
         /// </summary>
+
         private readonly ListLexer _listLexer = new ListLexer();
 
         /// <summary>
@@ -105,10 +111,8 @@ namespace Markdown2HTML.Lexers.BlockLexers
         public MarkdownToken Lex(string markdownString)
         {
 
-            // find starting line
-            var startMatch = _startLine.Match(markdownString);
             // ... is this a paragraph?
-            if (!startMatch.Success) return null;
+            if (!_startLine.IsMatch(markdownString)) return null;
 
             // discard startMatch, immediately match for ending.
             int length = 0; // use to represent length of consumed string
@@ -128,14 +132,14 @@ namespace Markdown2HTML.Lexers.BlockLexers
                 }
 
                 // ... is empty line?
-                if (_emptyLine.Match(nextLine).Success)
+                if (_emptyLine.IsMatch(nextLine))
                 {
                     // skip and finish.
                     break;
                 }
 
                 // interrupted by other blocks?
-                if (CheckBlockInterrupts(nextLine))
+                if (OtherBlockInterrupts(nextLine))
                 {
                     // yes, skip and finish.
                     break;
@@ -154,7 +158,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// </summary>
         /// <param name="markdownString">Markdown Document String</param>
         /// <returns></returns>
-        private bool CheckBlockInterrupts(string markdownString)
+        private bool OtherBlockInterrupts(string markdownString)
         {
             if (_headerInterrupt.Lex(markdownString) != null)
             {
@@ -164,7 +168,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
             {
                 return true;
             }
-            // TODO 
+            // TODO Missing BlockInterrupts for paragraph, due to missing implementation.
             //  3.1 hr (missing)
             //  3.2 heading
             //  3.3 blockquote (missing)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.Debug;
 using Markdown2HTML.Core.MarkdownObject;
@@ -41,6 +42,8 @@ namespace Markdown2HTML.Core
                 }
             }
 
+            LogObjects(results);
+
             return results;
         }
 
@@ -61,6 +64,17 @@ namespace Markdown2HTML.Core
                 _markdownTokenParsers.Add(parserType.Attributes.First().TokenType, parser);
             }
 
+        }
+
+        void LogObjects(IEnumerable<IMarkdownObject> mdObjects)
+        {
+            var sb = new StringBuilder();
+            foreach (var mdObj in mdObjects)
+            {
+                sb.AppendLine(mdObj.ToString());
+                sb.AppendLine("======================");
+            }
+            Logger.LogVerbose(sb.ToString());
         }
 
     }

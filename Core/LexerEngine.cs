@@ -58,6 +58,7 @@ namespace Markdown2HTML.Core
                         markdownString = markdownString.Substring(token.RawLength);
                         tokens.Add(token);
                         processing = true;
+                        break;
                     }
                 }
 

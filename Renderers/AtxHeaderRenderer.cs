@@ -6,14 +6,17 @@ using Markdown2HTML.Parsers;
 
 namespace Markdown2HTML.Renderers
 {
-    [MarkdownObjectRenderer(typeof(AtxMarkdownHeader))]
+    /// <summary>
+    /// Render Markdown Headers.
+    /// </summary>
+    [MarkdownObjectRenderer(typeof(MarkdownAtxHeader))]
     public class AtxHeaderRenderer : IMarkdownObjectRenderer
     {
         public string RenderToHTML(IMarkdownObject markdownObject)
         {
-            if (markdownObject is AtxMarkdownHeader headerObj)
+            if (markdownObject is MarkdownAtxHeader headerObj)
             {
-                return $"<h{headerObj.Level}>{headerObj.Text}</h{headerObj.Level}>\n";
+                return $"<h{headerObj.Level}>{headerObj.Content}</h{headerObj.Level}>\n";
             }
             else
             {

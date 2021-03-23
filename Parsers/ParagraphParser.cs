@@ -14,6 +14,10 @@ namespace Markdown2HTML.Parsers
         {
             Content = content;
         }
+        public override string ToString()
+        {
+            return $"{nameof(MarkdownParagraph)}\ncontent: {Content}";
+        }
     }
 
     [MarkdownTokenParser(TokenTypeHelper.PARAGRAPH)]
@@ -23,5 +27,6 @@ namespace Markdown2HTML.Parsers
         {
             return new MarkdownParagraph(token.Content);
         }
+
     }
 }
