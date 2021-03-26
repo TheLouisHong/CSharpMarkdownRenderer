@@ -16,14 +16,14 @@ namespace Markdown2HTML.Lexers.BlockLexers
     ///
     /// CommonMark 0.29 Compliant (example 32-49), with exceptions.
     ///
-    ///     Fail unit test because other features are not supported 
+    ///     Fail unit test because features are not supported elsewhere 
     ///     @TODO example 35, do not support escaping headers.
     ///     @TODO example 36, do not support inline emphasis.
     ///     @TODO example 39, do not support code blocks.
     ///     @TODO example 46, do not support escaping headers.
     ///     @TODO example 47, do not support stx headers or thematic breaks.
     ///
-    ///     Fail unit test because of bugs else where.
+    ///     Fail unit test because of bugs elsewhere.
     ///     @TODO example 48, bug with <see cref="ParagraphLexer"/> when immediately followed by header.
     /// </summary>
     [BlockLexer( order: (int) BlockLexerOrderHelper.AtxHeaderLexer) ]

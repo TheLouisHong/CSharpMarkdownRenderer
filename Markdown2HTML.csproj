@@ -47,20 +47,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Attributes\BlockLexerAttribute.cs" />
-    <Compile Include="Core\Attributes\InlineLexerAttribute.cs" />
     <Compile Include="Core\Attributes\MarkdownObjectRendererAttribute.cs" />
     <Compile Include="Core\Attributes\MarkdownTokenParserAttribute.cs" />
     <Compile Include="Core\IBlockLexer.cs" />
-    <Compile Include="Core\IInlineLexer.cs" />
+    <Compile Include="Core\IInlineRenderer.cs" />
     <Compile Include="Core\IMarkdownObjectRenderer.cs" />
     <Compile Include="Core\IMarkdownTokenParser.cs" />
+    <Compile Include="Core\LexerEngine.cs" />
     <Compile Include="Core\TokenTypeHelper.cs" />
     <Compile Include="Core\Debug\Logger.cs" />
+    <Compile Include="InlineRenderers\AutoEscapeInlineRenderer.cs" />
+    <Compile Include="InlineRenderers\brInlineRenderer.cs" />
+    <Compile Include="InlineRenderers\NaiveStrongEmphasisInlineRenderer.cs" />
     <Compile Include="Lexers\BlockLexers\AtxHeaderLexer.cs" />
     <Compile Include="Core\MarkdownObject\IMarkdownObject.cs" />
     <Compile Include="Core\Tokens\MarkdownToken.cs" />
     <Compile Include="Driver.cs" />
-    <Compile Include="Core\LexerEngine.cs" />
     <Compile Include="Core\MarkdownEngine.cs" />
     <Compile Include="Core\ParserEngine.cs" />
     <Compile Include="Lexers\BlockLexerOrderHelper.cs" />
@@ -82,9 +84,7 @@
     <None Include="packages.config" />
     <None Include="test.json" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Lexers\InlineLexers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="myout.html" />
   </ItemGroup>

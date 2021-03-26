@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.MarkdownObject;
+using Markdown2HTML.InlineRenderers;
 using Markdown2HTML.Parsers;
 
 namespace Markdown2HTML.Renderers
@@ -12,34 +13,22 @@ namespace Markdown2HTML.Renderers
     [MarkdownObjectRenderer(typeof(MarkdownParagraph))]
     public class ParagraphRenderer : IMarkdownObjectRenderer
     {
-        public readonly Regex brMatch = new Regex(
-            @" {2,}\n"
-            );
+
+        private readonly AutoEscapeInlineRenderer _autoEscapeInline = new AutoEscapeInlineRenderer();
+        private readonly brInlineRenderer _brInline = new brInlineRenderer();
+        private readonly NaiveStrongEmphasisInlineRenderer _strongEmphasisInline = new NaiveStrongEmphasisInlineRenderer();
+
         public string RenderToHTML(IMarkdownObject markdownObject)
         {
             if (markdownObject is MarkdownParagraph paragraph)
             {
-                // 1. replace double space with <br />
-                var render = new StringBuilder(brMatch.Replace(paragraph.Content, "<br />\n"));
+                var render = paragraph.Content;
 
-                var lines = render.ToString().Split('\n');
+                render = _autoEscapeInline.Render(render); // must be first
 
-                // 2. trim whitespace and newlines per line
-                for (var i = 0; i < lines.Length; i++)
-                {
-                    var line = lines[i];
-                    line = line.Trim('\n', ' ');
-                    lines[i] = line;
-                }
-
-                render.Clear();
-
-                for (int i = 0; i < lines.Length - 1; i++)
-                {
-                    render.AppendLine(lines[i]);
-                }
-
-                render.Append(lines.Last());
+                render = _brInline.Render(render);
+                render = _strongEmphasisInline.Render(render);
+                render = TruncatePerLine(render);
 
                 return $"<p>{render}</p>";
             }
@@ -47,6 +36,32 @@ namespace Markdown2HTML.Renderers
             {
                 throw new ArgumentException("Invalid MarkdownObject passed.");
             }
+        }
+
+        private static string TruncatePerLine(string render)
+        {
+            var lines = render.Split('\n');
+
+            // 2. trim whitespace and newlines per line
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i];
+                line = line.Trim('\n', ' ');
+                lines[i] = line;
+            }
+
+
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < lines.Length - 1; i++)
+            {
+                sb.AppendLine(lines[i]);
+            }
+
+            sb.Append(lines.Last());
+
+            render = sb.ToString();
+            return render;
         }
     }
 }

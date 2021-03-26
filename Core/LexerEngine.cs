@@ -11,12 +11,10 @@ namespace Markdown2HTML.Core
     public class LexerEngine
     {
         private List<KeyValuePair<int, IBlockLexer>> _blockLexers = new List<KeyValuePair<int, IBlockLexer>>();
-        private List<IInlineLexer> _inlineLexers = new List<IInlineLexer>();
 
         public LexerEngine()
         {
             InitBlockLexers();
-            InitInlineLexers();
         }
 
         public string Preprocess(string markdownString)
@@ -38,8 +36,6 @@ namespace Markdown2HTML.Core
 
             LexBlocks(markdownString, tokens);
             Logger.LogVerbose("...LexingInlines");
-
-            LexInline(tokens);
 
             LogTokens(tokens);
 
@@ -69,37 +65,6 @@ namespace Markdown2HTML.Core
                     break;
                 }
             }
-        }
-
-        private void LexInline(List<MarkdownToken> tokens)
-        {
-            foreach (var token in tokens)
-            {
-                foreach (var lexer in _inlineLexers)
-                {
-                    // lex the text inside the token
-                    lexer.Lex(token);
-                }
-            }
-        }
-
-        private void InitInlineLexers()
-        {
-            // get class that inherits from IBlockLexer and has BlockLexerAttribute
-            var blockLexersTypes =
-                from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                from @type in assembly.GetTypes()
-                where typeof(IInlineLexer).IsAssignableFrom(@type) && !@type.IsInterface
-                let attributes = @type.GetCustomAttributes(typeof(InlineLexerAttribute), true)
-                where attributes != null && attributes.Length > 0
-                select new {Type = @type, Attributes = attributes.Cast<InlineLexerAttribute>()};
-
-            foreach (var lexersType in blockLexersTypes)
-            {
-                var lexer = (IInlineLexer) Activator.CreateInstance(lexersType.Type);
-                _inlineLexers.Add(lexer);
-            }
-
         }
 
         void InitBlockLexers()

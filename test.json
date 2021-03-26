@@ -5206,5 +5206,30 @@
     "start_line": 0,
     "end_line": 0,
     "section": "Louis"
-  }
+  },
+  {
+    "markdown": "# &ampersand <less than test",
+    "html": "<h1>&amp;ampersand test &lt; less than test</h1>",
+    "example": 652,
+    "start_line": 0,
+    "end_line": 0,
+    "section": "Louis"
+  },
+  {
+    "markdown": "&ampersand test",
+    "html": "<p>&amp;ampersand test</p>",
+    "example": 653,
+    "start_line": 0,
+    "end_line": 0,
+    "section": "Louis"
+  },
+  {
+    "markdown": "*This is italicized*, and so is _this_, but this is __bold__ (just like **this is**).\nAnd how about *some italic __mixed with some bold__?*\n\n# Header 1\n- Use a minus sign for a bullet\n+ Or plus sign\n* Or an asterisk\n\nHere is an ampersand: 'AT&T'\nand then a less-than 'x < y'\n\nBut let's permit things like &copy; (the copyright symbol) as-is in a primitive way.\n\n1. Numbered lists are easy\n1. Markdown keeps track of the numbers for you\n7. So this will be item 3.\n\n### Header 3 ###\n\nBtw this should be on a single line\n\n- not as an unordered list\n- and not as an ordered list either",
+    "html": "<p><em>This is italicized<\/em>, and so is <em>this<\/em>, but this is <strong>bold<\/strong> (just like <strong>this is<\/strong>).\nAnd how about <em>some italic <strong>mixed with some bold<\/strong>?<\/em><\/p>\n\n<h1>Header 1<\/h1>\n\n<ul>\n<li>Use a minus sign for a bullet<\/li>\n<li>Or plus sign<\/li>\n<li>Or an asterisk<\/li>\n<\/ul>\n\n<p>Here is an ampersand: 'AT&amp;T'\nand then a less-than 'x &lt; y'<\/p>\n\n<p>But let's permit things like &copy; (the copyright symbol) as-is in a primitive way.<\/p>\n\n<ol>\n<li>Numbered lists are easy<\/li>\n<li>Markdown keeps track of the numbers for you<\/li>\n<li>So this will be item 3.<\/li>\n<\/ol>\n\n<h3>Header 3<\/h3>\n\n<p>Btw this should be on a single line<\/p>",
+    "example": 654,
+    "start_line": 0,
+    "end_line": 0,
+    "section": "Louis"
+  },
+
 ]
