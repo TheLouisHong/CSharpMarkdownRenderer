@@ -13,16 +13,16 @@ namespace Markdown2HTML.Renderers
     [MarkdownObjectRenderer(typeof(MarkdownAtxHeader))]
     public class AtxHeaderRenderer : IMarkdownObjectRenderer
     {
-        private readonly AutoEscapeInlineRenderer _autoEscapeInline = new AutoEscapeInlineRenderer();
-        private readonly NaiveStrongEmphasisInlineRenderer _naiveStrongEmphasis = new NaiveStrongEmphasisInlineRenderer();
+        private readonly EntitiesLineRenderer _entitiesLine = new EntitiesLineRenderer();
+        private readonly EmphStrongInlineRenderer _emphInlineRenderer = new EmphStrongInlineRenderer();
         public string RenderToHTML(IMarkdownObject markdownObject)
         {
             if (markdownObject is MarkdownAtxHeader headerObj)
             {
                 var render = headerObj.Content;
 
-                render = _autoEscapeInline.Render(render);
-                render = _naiveStrongEmphasis.Render(render);
+                render = _entitiesLine.Render(render);
+                render = _emphInlineRenderer.Render(render);
 
                 return $"<h{headerObj.Level}>{render}</h{headerObj.Level}>\n";
             }

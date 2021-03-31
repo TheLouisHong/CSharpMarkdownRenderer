@@ -49,6 +49,7 @@
     <Compile Include="Core\Attributes\BlockLexerAttribute.cs" />
     <Compile Include="Core\Attributes\MarkdownObjectRendererAttribute.cs" />
     <Compile Include="Core\Attributes\MarkdownTokenParserAttribute.cs" />
+    <Compile Include="Core\Extensions\StringExtensions.cs" />
     <Compile Include="Core\IBlockLexer.cs" />
     <Compile Include="Core\IInlineRenderer.cs" />
     <Compile Include="Core\IMarkdownObjectRenderer.cs" />
@@ -56,12 +57,13 @@
     <Compile Include="Core\LexerEngine.cs" />
     <Compile Include="Core\TokenTypeHelper.cs" />
     <Compile Include="Core\Debug\Logger.cs" />
-    <Compile Include="InlineRenderers\AutoEscapeInlineRenderer.cs" />
-    <Compile Include="InlineRenderers\brInlineRenderer.cs" />
-    <Compile Include="InlineRenderers\NaiveStrongEmphasisInlineRenderer.cs" />
+    <Compile Include="Core\DataStructure\DoubleLinkedList.cs" />
+    <Compile Include="Renderers\InlineRenderers\EmphStrongInlineRenderer.cs" />
+    <Compile Include="Renderers\InlineRenderers\EntitiesLineRenderer.cs" />
+    <Compile Include="Renderers\InlineRenderers\brInlineRenderer.cs" />
     <Compile Include="Lexers\BlockLexers\AtxHeaderLexer.cs" />
-    <Compile Include="Core\MarkdownObject\IMarkdownObject.cs" />
-    <Compile Include="Core\Tokens\MarkdownToken.cs" />
+    <Compile Include="Core\IMarkdownObject.cs" />
+    <Compile Include="Core\MarkdownToken.cs" />
     <Compile Include="Driver.cs" />
     <Compile Include="Core\MarkdownEngine.cs" />
     <Compile Include="Core\ParserEngine.cs" />

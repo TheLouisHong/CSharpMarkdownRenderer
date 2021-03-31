@@ -5231,5 +5231,20 @@
     "end_line": 0,
     "section": "Louis"
   },
-
+  {
+    "markdown": "&copy;&copy; copyright symbol\n&lt;&lt; should not touch, already valid\n&amp;&amp; should not touch, already valid\n&notarealcode;&notarealcode; treat as normal text\n&#0000;&#0000; illegal null unicode, replace with \\uFFFD\n&#38;&#38; unicode version of ampersand, should be replaced with &amp;",
+    "html": "",
+    "example": 655,
+    "start_line": 0,
+    "end_line": 0,
+    "section": "Louis"
+  },
+  {
+    "markdown": "*This is italicized*, and so is _this_, but this is __bold__ (just like **this is**). \n***This is bold and italacized.*** And how about *some italic __mixed with some bold__?*\n\nhow about a *** this is italic * this is bold* this is both *.\n\nhow about unclosed delimeters? *** like this ** ___ and this __?",
+    "html": "",
+    "example": 656,
+    "start_line": 0,
+    "end_line": 0,
+    "section": "Louis"
+  }
 ]

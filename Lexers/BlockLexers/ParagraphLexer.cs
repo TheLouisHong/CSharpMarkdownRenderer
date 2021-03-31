@@ -31,8 +31,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
     ///        Do not do any rendering or parsing inside the lexer.
     ///
     /// CommonMark 0.29 Compliant (example 189-196), with exceptions.
-    ///     @TODO with the exception of 195, code block not implemented.
-    ///     @TODO example 48 causes bugs: consuming one too many newlines.
+    ///     @TODO example 195, code block not implemented.
     /// </summary>
     [BlockLexer( order: (int) BlockLexerOrderHelper.ParagraphLexer) ]
     public class ParagraphLexer : IBlockLexer
@@ -85,6 +84,8 @@ namespace Markdown2HTML.Lexers.BlockLexers
         private readonly ListLexer _listLexer = new ListLexer();
 
         /// <summary>
+        /// Lex paragraphs.
+        /// 
         /// examples:
         /// case 1: aaa\n
         ///         ^ $
@@ -155,6 +156,13 @@ namespace Markdown2HTML.Lexers.BlockLexers
 
         /// <summary>
         /// checks for block interrupts by other lexers.
+        /// // TODO Missing BlockInterrupts for paragraph, due to missing implementation.
+        /// // 3.1 hr (missing)
+        /// // 3.2 heading
+        /// // 3.3 blockquote (missing)
+        /// // 3.4 fences (missing)
+        /// // 3.5 list
+        /// // 3.5 html (missing)
         /// </summary>
         /// <param name="markdownString">Markdown Document String</param>
         /// <returns></returns>
@@ -168,13 +176,6 @@ namespace Markdown2HTML.Lexers.BlockLexers
             {
                 return true;
             }
-            // TODO Missing BlockInterrupts for paragraph, due to missing implementation.
-            //  3.1 hr (missing)
-            //  3.2 heading
-            //  3.3 blockquote (missing)
-            //  3.4 fences (missing)
-            //  3.5 list
-            //  3.5 html (missing)
             return false;
         }
     }

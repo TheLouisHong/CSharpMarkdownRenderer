@@ -23,6 +23,12 @@ namespace Markdown2HTML.Core
             markdownString = markdownString.Replace("\r\n", "\n");
             // replace tabs with 4 spaces
             markdownString = markdownString.Replace("\t", "    ");
+
+            // https://spec.commonmark.org/0.29/#insecure-characters
+            // For security reasons, the Unicode character U+0000
+            // must be replaced with the REPLACEMENT CHARACTER (U+FFFD).
+            markdownString = markdownString.Replace('\u0000', '\uFFFD');
+
             return markdownString;
         }
 

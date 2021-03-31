@@ -14,9 +14,9 @@ namespace Markdown2HTML.Renderers
     public class ParagraphRenderer : IMarkdownObjectRenderer
     {
 
-        private readonly AutoEscapeInlineRenderer _autoEscapeInline = new AutoEscapeInlineRenderer();
+        private readonly EntitiesLineRenderer _entitiesLine = new EntitiesLineRenderer();
         private readonly brInlineRenderer _brInline = new brInlineRenderer();
-        private readonly NaiveStrongEmphasisInlineRenderer _strongEmphasisInline = new NaiveStrongEmphasisInlineRenderer();
+        private readonly EmphStrongInlineRenderer _emphInlineRenderer = new EmphStrongInlineRenderer();
 
         public string RenderToHTML(IMarkdownObject markdownObject)
         {
@@ -24,10 +24,10 @@ namespace Markdown2HTML.Renderers
             {
                 var render = paragraph.Content;
 
-                render = _autoEscapeInline.Render(render); // must be first
+                render = _entitiesLine.Render(render); // must be first
 
                 render = _brInline.Render(render);
-                render = _strongEmphasisInline.Render(render);
+                render = _emphInlineRenderer.Render(render);
                 render = TruncatePerLine(render);
 
                 return $"<p>{render}</p>";

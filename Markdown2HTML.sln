@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdown2HTML", "Markdown2HTML.csproj", "{2FC22864-785F-4349-A794-D01C3311C1DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "..\UnitTest\UnitTest.csproj", "{74778207-4A3A-45AC-AEAC-39B4A4E8C7A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2FC22864-785F-4349-A794-D01C3311C1DD} = {2FC22864-785F-4349-A794-D01C3311C1DD}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{2FC22864-785F-4349-A794-D01C3311C1DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FC22864-785F-4349-A794-D01C3311C1DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FC22864-785F-4349-A794-D01C3311C1DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74778207-4A3A-45AC-AEAC-39B4A4E8C7A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74778207-4A3A-45AC-AEAC-39B4A4E8C7A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74778207-4A3A-45AC-AEAC-39B4A4E8C7A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74778207-4A3A-45AC-AEAC-39B4A4E8C7A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

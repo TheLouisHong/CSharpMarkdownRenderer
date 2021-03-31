@@ -69,7 +69,7 @@ namespace Markdown2HTML
 
         public void OutputSingleExample(int example)
         {
-            if (example >= _testCases.Count || example < 0)
+            if (example > _testCases.Count || example < 0)
             {
                 throw new ArgumentException("Example Index out of range.");
             }
