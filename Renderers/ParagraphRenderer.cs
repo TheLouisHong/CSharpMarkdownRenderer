@@ -46,7 +46,7 @@ namespace Markdown2HTML.Renderers
             for (var i = 0; i < lines.Length; i++)
             {
                 var line = lines[i];
-                line = line.Trim('\n', ' ');
+                line = line.Trim('\n', ' '); // BUG does enot trim unicode whitespace
                 lines[i] = line;
             }
 

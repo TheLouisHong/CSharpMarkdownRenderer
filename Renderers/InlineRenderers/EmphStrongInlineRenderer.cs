@@ -23,12 +23,11 @@ namespace Markdown2HTML.InlineRenderers
     ///  
     /// CommonMark 0.29 as *Reference* (example 350-480), with LOTS of exceptions.
     ///
-    ///     Read CommonMark Example Diff At the bottom of this source file.
+    ///     Read CommonMark Example 350-480 diff At the bottom of this source file.
     /// 
     ///     @TODO Do not support url
     ///     @TODO Do not support code or code block 
     ///     @BUG Cannot handle "*why_like*this_" will produce incorrect HTML (that happens to be syntactically correct)
-    ///         see line 200 for potential fix.
     ///     @TODO Cannot handle " **foo**bar**" correctly, need to add modulo-3 rule. 
     ///         https://spec.commonmark.org/0.29/#example-410
     ///     @TODO Cannot handle " ***strong**emp*" correctly 
@@ -37,122 +36,31 @@ namespace Markdown2HTML.InlineRenderers
     /// </summary>
     public class EmphStrongInlineRenderer : IInlineRenderer
     {
-        private static readonly Regex _starTokenPattern = new Regex(
+        private static readonly Regex StarTokenPattern = new Regex(
             @"(\*+)");
 
-        private static readonly Regex _lineTokenPattern = new Regex(
+        private static readonly Regex LineTokenPattern = new Regex(
             @"(_+)");
 
         public string Render(string content)
         {
-            content = RenderAux(content, _starTokenPattern, '*', true);
-            content = RenderAux(content, _lineTokenPattern, '_', false);
+            // BUG bug in situation: *word_like*this_ -> <em>word<em>like</em>this</em>
+            // luckily, this makes no difference in terms of HTML rendering and syntax.
+
+            // follow two func calls need to interact to resolve that issue.
+            content = RenderAux(content, StarTokenPattern, '*', true);
+            content = RenderAux(content, LineTokenPattern, '_', false);
             return content;
         }
 
-        private static string RenderAux_Star(string content)
-        {
-            var tokens = TokenizeByDelim(content, _starTokenPattern);
-            var delimStack = BuildDelimStack_Star(tokens);
-
-            DoubleLinkedList<DelimStackNode>.Node openerBottom = null;
-            //DoubleLinkedList<DelimStackNode>.Node stackBottom = null;
-
-            // look for closer
-            var closer = delimStack.Head;
-            while (closer != null)
-            {
-                // find closer
-                if (!closer.Value.Potential.HasFlag(DelimStackNode.DelimPotential.Closer))
-                {
-                    closer = closer.Next;
-                }
-                else // closer find
-                {
-                    // look for opener
-                    var opener = closer.Prev;
-
-                    var foundOpener = false;
-                    while (opener != null && opener != openerBottom)
-                    {
-                        // found opener
-                        if (!opener.Value.Potential.HasFlag(DelimStackNode.DelimPotential.Opener))
-                        {
-                            opener = opener.Prev;
-                        }
-                        else // found opener
-                        {
-                            var openerTextNode = opener.Value.textNode;
-                            var closerTextNode = closer.Value.textNode;
-
-                            var openerStr = openerTextNode.Value;
-                            var closerStr = closerTextNode.Value;
-
-                            var strength = Math.Min(openerStr.Length, closerStr.Length);
-
-
-                            // is strong
-                            if (strength >= 2)
-                            {
-                                // consume two delims
-                                openerTextNode.Value = openerStr.Substring(0, openerStr.Length - 2);
-                                closerTextNode.Value = closerStr.Substring(0, closerStr.Length - 2);
-
-                                openerTextNode.InsertAfter("<strong>");
-                                closerTextNode.InsertBefore("</strong>");
-                            }
-                            // or emph
-                            else
-                            {
-                                // consume two delims
-                                openerTextNode.Value = openerStr.Substring(0, openerStr.Length - 1);
-                                closerTextNode.Value = closerStr.Substring(0, closerStr.Length - 1);
-
-                                openerTextNode.InsertAfter("<em>");
-                                closerTextNode.InsertBefore("</em>");
-                            }
-
-                            // any other delim between can no longer be used
-                            // var extraDelim = opener.Next.Value.textNode;
-                            // while (extraDelim != closer.Value.textNode)
-                            // {
-                            //      ... remove _ delims that are between opener and closer
-                            // }
-
-                            // remove empty delim text nodes 
-                            // all used up
-                            if (openerTextNode.Value.Length == 0)
-                            {
-                                delimStack.Remove(opener);
-                            }
-
-                            // remove empty delim text nodes 
-                            // all used up
-                            if (closerTextNode.Value.Length == 0)
-                            {
-                                delimStack.Remove(closer);
-                                closer = closer.Next;
-                            }
-
-
-                            foundOpener = true;
-                            break;
-                        }
-
-                        // next opener,
-                    }
-
-                    if (!foundOpener)
-                    {
-                        openerBottom = closer.Prev;
-                        closer = closer.Next;
-                    }
-                }
-            }
-
-            
-            return ConcatTokenList(tokens);
-        }
+        /// <summary>
+        /// Helper function to render * and _ with similar logic.
+        /// </summary>
+        /// <param name="content">markdown to be rendered</param>
+        /// <param name="tokenPattern">Regex to match the delim runs. Example for star: (\*+)</param>
+        /// <param name="delimChar">The delim character, must be the same as the token pattern.</param>
+        /// <param name="allowIntraword">intraword means *is*this*allowed*. If this the * around this is rendered, then intraword is enabled</param>
+        /// <returns>rendered string</returns>
         private static string RenderAux(string content, Regex tokenPattern, char delimChar, bool allowIntraword)
         {
             var tokens = TokenizeByDelim(content, tokenPattern);
@@ -185,8 +93,8 @@ namespace Markdown2HTML.InlineRenderers
                         }
                         else // found opener
                         {
-                            var openerTextNode = opener.Value.textNode;
-                            var closerTextNode = closer.Value.textNode;
+                            var openerTextNode = opener.Value.TextNode;
+                            var closerTextNode = closer.Value.TextNode;
 
                             var openerStr = openerTextNode.Value;
                             var closerStr = closerTextNode.Value;
@@ -370,7 +278,7 @@ namespace Markdown2HTML.InlineRenderers
                         potential |= DelimStackNode.DelimPotential.Opener;
                     }
 
-                    var delimNode = new DelimStackNode(curr, true, potential);
+                    var delimNode = new DelimStackNode(curr, potential);
 
                     delimStack.Append(delimNode);
                 }
@@ -379,37 +287,6 @@ namespace Markdown2HTML.InlineRenderers
 
             return delimStack;
 
-        }
-
-        private static DoubleLinkedList<DelimStackNode> BuildDelimStack_Star(DoubleLinkedList<string> tokens)
-        {
-            var delimStack = new DoubleLinkedList<DelimStackNode>();
-
-            var curr = tokens.Head;
-            while (curr != null)
-            {
-                if (curr.Value.StartsWith("*"))
-                {
-                    var potential = DelimStackNode.DelimPotential.None;
-
-                    if (IsCloser(curr, true))
-                    {
-                        potential |= DelimStackNode.DelimPotential.Closer;
-                    }
-
-                    if (IsOpener(curr, true))
-                    {
-                        potential |= DelimStackNode.DelimPotential.Opener;
-                    }
-
-                    var delimNode = new DelimStackNode(curr, true, potential);
-
-                    delimStack.Append(delimNode);
-                }
-                curr = curr.Next;
-            }
-
-            return delimStack;
         }
 
 
@@ -424,6 +301,22 @@ namespace Markdown2HTML.InlineRenderers
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Tokenize text using token pattern into a double-linked-list.
+        /// For instance:
+        ///     *this**text*
+        ///     ->
+        ///     token: *
+        ///     token: this
+        ///     token: **
+        ///     token: text
+        ///     token: *
+        /// 
+        /// This is so the renderer can efficiently manipulate text around the delims.
+        /// </summary>
+        /// <param name="content">content to be rendered.</param>
+        /// <param name="delimMatch">Regex to match the delim runs. Example for star: (\*+)</param>
+        /// <returns>Tokenized text stored in double-linked-list.</returns>
         public static DoubleLinkedList<string> TokenizeByDelim(string content, Regex delimMatch)
         {
             var tokenized = new DoubleLinkedList<string>();
@@ -452,32 +345,82 @@ namespace Markdown2HTML.InlineRenderers
             return tokenized;
         }
 
+        /// <summary>
+        /// DelimStack only stores delimiters,
+        /// but has reference to the nodes in the tokenized text double-linked-list.
+        /// The DelimStack is used to stores and retrieve runtime parsing information during the parse. 
+        /// </summary>
         private class DelimStackNode
         {
-            public DoubleLinkedList<string>.Node textNode;
+            /// <summary>
+            /// Reference to the tokenized text token.
+            /// </summary>
+            public DoubleLinkedList<string>.Node TextNode;
 
-            public bool Active;
+            // <summary>
+            // Unused. Will be needed for URL parsing in the future.
+            // </summary>
+            //public bool Active;
+
+            /// <summary>
+            /// Stored parsing information about this delim.
+            /// Depending on the parse rules, a delim can either be opener, closer, or both.
+            /// example:
+            /// ***potential opener
+            /// potential closer***
+            /// potentially***both
+            /// * none
+            /// </summary>
             public DelimPotential Potential;
 
-            public DelimStackNode(DoubleLinkedList<string>.Node textNode, bool active, DelimPotential potential)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="textNode">TextNode this delim references in the tokenized text double-linked-list</param>
+            /// <param name="potential">Stores parsing information about delim. <see cref="Potential"/></param>
+            public DelimStackNode(DoubleLinkedList<string>.Node textNode, DelimPotential potential)
             {
-                this.textNode = textNode;
-                Active = active;
+                TextNode = textNode;
+                //Active = active;
                 Potential = potential;
             }
 
+            /// <summary>
+            /// Stored parsing information about this delim.
+            /// Depending on the parse rules, a delim can either be opener, closer, or both.
+            /// example:
+            /// ***potential opener
+            /// potential closer***
+            /// potentially***both
+            /// * none
+            /// </summary>
             [Flags]
             public enum DelimPotential
             {
+                /// <summary>
+                /// * none
+                /// </summary>
                 None = 0,
+
+                /// <summary>
+                /// ***potential opener
+                /// </summary>
                 Opener = 1 << 0, 
+
+                /// <summary>
+                /// potential closer***
+                /// </summary>
                 Closer = 1 << 1, 
+
+                /// <summary>
+                /// potentially***both
+                /// </summary>
                 Both = Opener | Closer
             }
 
             public override string ToString()
             {
-                return $"{{Value={textNode.Value}, Active={Active}, Potential={Potential}}} ";
+                return $"{{Value={TextNode.Value}, Potential={Potential}}} ";
             }
         }
     }

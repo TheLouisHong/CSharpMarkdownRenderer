@@ -44,7 +44,7 @@ namespace Markdown2HTML.Parsers
             else
             {
                 // rule 5 , see AtxHeaderLexer.cs
-                content = match.Groups[2].Value.Trim(' ', '\n');
+                content = match.Groups[2].Value.Trim(' ', '\n'); // BUG Does not trip unicode whitespace
             }
             
             var header = new MarkdownAtxHeader(level, content);
