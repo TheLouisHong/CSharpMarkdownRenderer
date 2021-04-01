@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.Debug;
+using Markdown2HTML.Core.Engines;
 
 
 namespace Markdown2HTML
@@ -191,8 +192,11 @@ namespace Markdown2HTML
                     Logger.Log($"Running example {example}");
                     driver.OutputSingleExample(example);
                 }
-                Logger.Log($"Filter by section {args[0]}.");
-                driver.OutputMyTestCase(args[0]);
+                else
+                {
+                    Logger.Log($"Filter by section {args[0]}.");
+                    driver.OutputMyTestCase(args[0]);
+                }
             }
             else
             {

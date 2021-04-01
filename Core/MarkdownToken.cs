@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Markdown2HTML.Core.Tokens
@@ -20,12 +22,19 @@ namespace Markdown2HTML.Core.Tokens
         /// </summary>
         public readonly int RawLength;
 
-        public MarkdownToken(string tokenType, string content, int rawLength)
+        /// <summary>
+        /// sub-tokens list. Stores tokens recursively. Used for nested blocks, like list items.
+        /// </summary>
+        public List<MarkdownToken> Child; // TODO
+
+        public MarkdownToken(string tokenType, string content, int rawLength, List<MarkdownToken> children)
         {
             TokenType = tokenType;
             Content = content;
             RawLength = rawLength;
+            Child = children;
         }
+
 
         public override string ToString()
         {

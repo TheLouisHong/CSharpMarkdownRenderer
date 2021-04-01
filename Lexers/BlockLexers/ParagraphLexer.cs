@@ -1,6 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
+using Markdown2HTML.Core.Engines;
+using Markdown2HTML.Core.Interfaces;
 using Markdown2HTML.Core.Tokens;
 
 namespace Markdown2HTML.Lexers.BlockLexers
@@ -81,7 +83,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// List interrupts paragraphs. Use header lexer to check for interrupts.
         /// </summary>
 
-        private readonly ListLexer _listLexer = new ListLexer();
+        private readonly NaiveListLexer _naiveListLexer = new NaiveListLexer();
 
         /// <summary>
         /// Lex paragraphs.
@@ -90,19 +92,19 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// case 1: aaa\n
         ///         ^ $
         ///  1 height paragraph
-        ///
+        /// 
         /// case 2: aaa\n\n
         ///         ^ $
         /// 1 height paragraph
-        ///
+        /// 
         /// case 3: aaa\nbbb\n\n
         ///         ^      $
         ///  2+ height paragraph
-        ///
+        /// 
         /// case 4: aaa  \nbbb
         ///         ^        $
         ///  br, because of 2+ spaces
-        ///
+        /// 
         /// case 5: aaa
         ///         ^ $
         ///  end of file.
@@ -140,7 +142,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
                 }
 
                 // interrupted by other blocks?
-                if (OtherBlockInterrupts(nextLine))
+                if (OtherBlockInterrupts(nextLine, lexerEngine))
                 {
                     // yes, skip and finish.
                     break;
@@ -151,7 +153,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
             }
             // finish, lex token for lexer.
             var result = markdownString.Substring(0, length);
-            return new MarkdownToken(TokenTypeHelper.PARAGRAPH, result, length);
+            return new MarkdownToken(TokenTypeHelper.PARAGRAPH, result, length, null);
         }
 
         /// <summary>
@@ -165,14 +167,15 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// // 3.5 html (missing)
         /// </summary>
         /// <param name="markdownString">Markdown Document String</param>
+        /// <param name="lexerEngine"></param>
         /// <returns></returns>
-        private bool OtherBlockInterrupts(string markdownString)
+        private bool OtherBlockInterrupts(string markdownString, LexerEngine lexerEngine)
         {
             if (_headerInterrupt.Lex(markdownString) != null)
             {
                 return true;
             }
-            else if (_listLexer.Lex(markdownString) != null)
+            else if (_naiveListLexer.Lex(markdownString) != null)
             {
                 return true;
             }

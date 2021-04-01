@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
+using Markdown2HTML.Core.Interfaces;
 
 namespace Markdown2HTML.InlineRenderers
 {

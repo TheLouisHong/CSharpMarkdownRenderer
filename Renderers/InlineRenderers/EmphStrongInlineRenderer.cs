@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.DataStructure;
 using Markdown2HTML.Core.Extensions;
+using Markdown2HTML.Core.Interfaces;
 
 namespace Markdown2HTML.InlineRenderers
 {
@@ -73,7 +74,6 @@ namespace Markdown2HTML.InlineRenderers
             var closer = delimStack.Head;
             while (closer != null)
             {
-                // found closer
                 if (!closer.Value.Potential.HasFlag(DelimStackNode.DelimPotential.Closer))
                 {
                     closer = closer.Next;
@@ -86,7 +86,6 @@ namespace Markdown2HTML.InlineRenderers
                     var foundOpener = false;
                     while (opener != null && opener != openerBottom)
                     {
-                        // found opener
                         if (!opener.Value.Potential.HasFlag(DelimStackNode.DelimPotential.Opener))
                         {
                             opener = opener.Prev;
@@ -122,11 +121,12 @@ namespace Markdown2HTML.InlineRenderers
                                 closerTextNode.InsertBefore("</em>");
                             }
 
+                            // can be used to fix the bug *like_this*in the future_
                             // any other delim between can no longer be used
                             // var extraDelim = opener.Next.Value.textNode;
                             // while (extraDelim != closer.Value.textNode)
                             // {
-                            //      ... remove * delims that are between opener and closer
+                            //      ... remove other competing delims that are between opener and closer
                             // }
 
                             // remove empty delim text nodes 
@@ -135,15 +135,11 @@ namespace Markdown2HTML.InlineRenderers
                             {
                                 delimStack.Remove(opener);
                             }
-
-                            // remove empty delim text nodes 
-                            // all used up
                             if (closerTextNode.Value.Length == 0)
                             {
                                 delimStack.Remove(closer);
                                 closer = closer.Next;
                             }
-
 
                             foundOpener = true;
                             break;
@@ -158,7 +154,7 @@ namespace Markdown2HTML.InlineRenderers
                 }
             }
             
-            return ConcatTokenList(tokens);
+            return RenderTokenList(tokens);
         }
 
         private static bool IsOpener(DoubleLinkedList<string>.Node curr, bool allowIntraword)
@@ -198,6 +194,7 @@ namespace Markdown2HTML.InlineRenderers
             // statements below imply followed by a punctuation
 
             // (2b) followed by punctuation and preceded by whitespace or punctuation 
+            // For purposes of this definition, the beginning and the end of the line count as Unicode whitespace.
             if (curr.Prev == null 
                 || char.IsWhiteSpace(curr.Prev.Value.LastChar()) 
                 || char.IsPunctuation(curr.Prev.Value.LastChar()))
@@ -246,6 +243,7 @@ namespace Markdown2HTML.InlineRenderers
             // statements below imply preceded by a punctuation
 
             // (2b) preceded by a punctuation and followed by whitespace or a punctuation
+            // For purposes of this definition, the beginning and the end of the line count as Unicode whitespace.
             if (curr.Next == null 
                 || char.IsWhiteSpace(curr.Next.Value.FirstChar()) 
                 || char.IsPunctuation(curr.Next.Value.FirstChar()))
@@ -290,7 +288,12 @@ namespace Markdown2HTML.InlineRenderers
         }
 
 
-        public static string ConcatTokenList(DoubleLinkedList<string> tokenList)
+        /// <summary>
+        /// Render token list back into string.
+        /// </summary>
+        /// <param name="tokenList">list of tokens</param>
+        /// <returns>rendered string</returns>
+        public static string RenderTokenList(DoubleLinkedList<string> tokenList)
         {
             var sb = new StringBuilder();
             foreach (var str in tokenList)
@@ -346,8 +349,8 @@ namespace Markdown2HTML.InlineRenderers
         }
 
         /// <summary>
-        /// DelimStack only stores delimiters,
-        /// but has reference to the nodes in the tokenized text double-linked-list.
+        /// DelimStack only stores delimiters.
+        /// DelimStack has a reference to the nodes in the tokenized text double-linked-list.
         /// The DelimStack is used to stores and retrieve runtime parsing information during the parse. 
         /// </summary>
         private class DelimStackNode
@@ -363,18 +366,19 @@ namespace Markdown2HTML.InlineRenderers
             //public bool Active;
 
             /// <summary>
-            /// Stored parsing information about this delim.
             /// Depending on the parse rules, a delim can either be opener, closer, or both.
             /// example:
             /// ***potential opener
             /// potential closer***
             /// potentially***both
             /// * none
+            ///
+            /// This variable stores such property about the delim.
             /// </summary>
             public DelimPotential Potential;
 
             /// <summary>
-            /// 
+            /// Creates a DelimStackNode.
             /// </summary>
             /// <param name="textNode">TextNode this delim references in the tokenized text double-linked-list</param>
             /// <param name="potential">Stores parsing information about delim. <see cref="Potential"/></param>
@@ -426,6 +430,8 @@ namespace Markdown2HTML.InlineRenderers
     }
 }
 
+
+// CommonMark diff
 /*
 --- example403.txt	2021-03-22 11:01:00.063413500 -0700
 +++ myout403.txt	2021-03-31 04:27:28.865928600 -0700

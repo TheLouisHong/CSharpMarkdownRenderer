@@ -1,6 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
+using Markdown2HTML.Core.Engines;
+using Markdown2HTML.Core.Interfaces;
 using Markdown2HTML.Core.Tokens;
 
 namespace Markdown2HTML.Lexers.BlockLexers
@@ -42,7 +44,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
             var match = _match.Match(markdownString);
             if (match.Success)
             {
-                return new MarkdownToken(TokenTypeHelper.ATX_HEADER, match.Value, match.Length);
+                return new MarkdownToken(TokenTypeHelper.ATX_HEADER, match.Value, match.Length, null);
             }
             return null;
         }

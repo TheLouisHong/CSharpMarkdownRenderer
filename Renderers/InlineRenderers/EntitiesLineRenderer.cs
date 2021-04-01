@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
+using Markdown2HTML.Core.Interfaces;
 using Newtonsoft.Json;
 
 namespace Markdown2HTML.InlineRenderers
@@ -107,14 +108,14 @@ namespace Markdown2HTML.InlineRenderers
         public string Render(string content)
         {
             // 1. replace entities using the symbols library &;
-            content = ReplaceEntities(content);
+            content = RenderEntities(content);
 
             // 2. replace unicode character &# 
-            content = ReplaceDecimalNumeric(content); // TODO Not supported, yet
-            content = ReplaceHexadecimalNumeric(content); // TODO Not supported, yet
+            content = RenderDecimalNumeric(content); 
+            content = RenderHexadecimalNumeric(content); 
 
             // 3. replace ampersand and lessthan with escaped html versions & -> &amp;
-            content = ReplaceHTMLChar(content);
+            content = RenderHTMLChar(content);
 
             return content;
         }
@@ -141,7 +142,7 @@ namespace Markdown2HTML.InlineRenderers
         /// group 4 &quot;
         /// group 5 &#39;
         /// </summary>
-        private string ReplaceHTMLChar(string content)
+        private string RenderHTMLChar(string content)
         {
             foreach (var pair in _replacement)
             {
@@ -151,20 +152,19 @@ namespace Markdown2HTML.InlineRenderers
             return content;
         }
 
+        /// <summary>
+        /// group 1: decimal numeric
+        /// </summary>
         private readonly Regex _decimalNumericPattern = new Regex(
             @"&#(\d{1,7});");
-
-        private readonly Regex _hexadecimalNumericPattern = new Regex(
-            @"&#[Xx]([\dABCDEFabcdef]{1,6});");
-
         /// <summary>
-        /// TODO Add support for Decimal Numeric
+        /// Parsing for Decimal Numeric
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        private string ReplaceDecimalNumeric(string content)
+        private string RenderDecimalNumeric(string content)
         {
-            content = _decimalNumericPattern.Replace(content, (match) =>
+            content = _decimalNumericPattern.Replace(content, match =>
             {
                 if (int.TryParse(match.Groups[1].Value, out var @char))
                 {
@@ -185,7 +185,12 @@ namespace Markdown2HTML.InlineRenderers
             return content;
         }
 
-        private string ReplaceHexadecimalNumeric(string content)
+        /// <summary>
+        /// group 1:hexadecimal numeric
+        /// </summary>
+        private readonly Regex _hexadecimalNumericPattern = new Regex(
+            @"&#[Xx]([\dABCDEFabcdef]{1,6});");
+        private string RenderHexadecimalNumeric(string content)
         {
             content = _hexadecimalNumericPattern.Replace(content, (match) =>
             {
@@ -214,7 +219,7 @@ namespace Markdown2HTML.InlineRenderers
         private readonly Regex _entityPattern = new Regex(
             "(&[^#;]+;)");
 
-        private string ReplaceEntities(string content)
+        private string RenderEntities(string content)
         {
             content = _entityPattern.Replace(content,  (match) =>
             {
