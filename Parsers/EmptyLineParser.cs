@@ -1,4 +1,5 @@
-﻿using Markdown2HTML.Core;
+﻿using System;
+using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.Interfaces;
 using Markdown2HTML.Core.Tokens;
@@ -10,7 +11,11 @@ namespace Markdown2HTML.Parsers
     {
         public IMarkdownObject Parse(MarkdownToken token)
         {
-            return new MarkdownEmptyLine(token.Content);
+            if (!(token is MarkdownLeafBlock leafBlock))
+            {
+                throw new InvalidOperationException("Only parses leaf-blocks.");
+            }
+            return new MarkdownEmptyLine(leafBlock.Content);
         }
     }
 

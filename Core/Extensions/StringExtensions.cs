@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Markdown2HTML.Core.Extensions
+﻿namespace Markdown2HTML.Core.Extensions
 {
     public static class StringExtensions
     {

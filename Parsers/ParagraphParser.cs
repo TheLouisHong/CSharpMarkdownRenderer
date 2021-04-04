@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.Interfaces;
@@ -25,7 +25,11 @@ namespace Markdown2HTML.Parsers
     {
         public IMarkdownObject Parse(MarkdownToken token)
         {
-            return new MarkdownParagraph(token.Content);
+            if (!(token is MarkdownLeafBlock leafBlock))
+            {
+                throw new InvalidOperationException("Only parses leaf-blocks.");
+            }
+            return new MarkdownParagraph(leafBlock.Content);
         }
 
     }

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Markdown2HTML.Core;
-using Markdown2HTML.Core.DataStructure;
+using Markdown2HTML.Core.Algorithms;
 using Markdown2HTML.Core.Extensions;
 using Markdown2HTML.Core.Interfaces;
 

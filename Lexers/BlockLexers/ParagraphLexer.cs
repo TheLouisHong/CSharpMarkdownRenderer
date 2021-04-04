@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
-using Markdown2HTML.Core.Engines;
 using Markdown2HTML.Core.Interfaces;
 using Markdown2HTML.Core.Tokens;
 
@@ -142,7 +141,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
                 }
 
                 // interrupted by other blocks?
-                if (OtherBlockInterrupts(nextLine, lexerEngine))
+                if (OtherBlockInterrupts(nextLine))
                 {
                     // yes, skip and finish.
                     break;
@@ -153,7 +152,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
             }
             // finish, lex token for lexer.
             var result = markdownString.Substring(0, length);
-            return new MarkdownToken(TokenTypeHelper.PARAGRAPH, result, length, null);
+            return new MarkdownLeafBlock(TokenTypeHelper.PARAGRAPH, result, length);
         }
 
         /// <summary>
@@ -169,7 +168,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// <param name="markdownString">Markdown Document String</param>
         /// <param name="lexerEngine"></param>
         /// <returns></returns>
-        private bool OtherBlockInterrupts(string markdownString, LexerEngine lexerEngine)
+        private bool OtherBlockInterrupts(string markdownString)
         {
             if (_headerInterrupt.Lex(markdownString) != null)
             {

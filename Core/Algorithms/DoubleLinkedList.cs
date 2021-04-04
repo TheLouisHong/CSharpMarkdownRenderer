@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Markdown2HTML.Core.DataStructure
+namespace Markdown2HTML.Core.Algorithms
 {
     public class DoubleLinkedList<T> : IEnumerable<T>
     {

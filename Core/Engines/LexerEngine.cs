@@ -9,16 +9,16 @@ using Markdown2HTML.Core.Tokens;
 
 namespace Markdown2HTML.Core.Engines
 {
-    public class LexerEngine
+    public static class LexerEngine
     {
-        private List<KeyValuePair<int, IBlockLexer>> _blockLexers = new List<KeyValuePair<int, IBlockLexer>>();
+        private static List<KeyValuePair<int, IBlockLexer>> _blockLexers = new List<KeyValuePair<int, IBlockLexer>>();
 
-        public LexerEngine()
+        static LexerEngine()
         {
-            InitBlockLexers();
+            CollectBlockLexers();
         }
 
-        public string Preprocess(string markdownString)
+        private static string Preprocess(string markdownString)
         {
             // replace CRLF with LF
             markdownString = markdownString.Replace("\r\n", "\n");
@@ -33,23 +33,24 @@ namespace Markdown2HTML.Core.Engines
             return markdownString;
         }
 
-        public List<MarkdownToken> Lex(string markdownString)
+        public static List<MarkdownToken> Lex(string markdownString)
         {
             Logger.LogVerbose("...Lexing");
+
+            // preprocess string
             markdownString = Preprocess(markdownString);
 
+            // lex
             var tokens = new List<MarkdownToken>();
-            Logger.LogVerbose("...LexingBlocks");
+            LuxAux(markdownString, ref tokens);
 
-            LexBlocks(markdownString, ref tokens);
-            Logger.LogVerbose("...LexingInlines");
-
+            // debug
             LogTokens(tokens);
 
             return tokens;
         }
 
-        public void LexBlocks(string markdownString, ref List<MarkdownToken> tokens)
+        private static void LuxAux(string markdownString, ref List<MarkdownToken> tokens)
         {
             while (markdownString.Length > 0) {
                 bool processing = false;
@@ -75,7 +76,7 @@ namespace Markdown2HTML.Core.Engines
             }
         }
 
-        void InitBlockLexers()
+        private static void CollectBlockLexers()
         {
             // get class that inherits from IBlockLexer and has BlockLexerAttribute
             var blockLexersTypes =
@@ -92,6 +93,7 @@ namespace Markdown2HTML.Core.Engines
                 _blockLexers.Add(new KeyValuePair<int, IBlockLexer>(lexersType.Attributes.First().Order, lexer));
             }
 
+            // sort lexer by their defined ordered, defined by their BlockLexerAttribute
             _blockLexers.Sort((a, b) =>
             {
                 if (a.Key > b.Key)
@@ -106,7 +108,7 @@ namespace Markdown2HTML.Core.Engines
             });
         }
 
-        private void LogTokens(IEnumerable<MarkdownToken> tokens)
+        private static void LogTokens(IEnumerable<MarkdownToken> tokens)
         {
             var sb = new StringBuilder();
             foreach (var token in tokens)

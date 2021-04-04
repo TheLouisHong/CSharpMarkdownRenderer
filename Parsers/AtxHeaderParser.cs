@@ -22,13 +22,18 @@ namespace Markdown2HTML.Parsers
             );
 
         /// <summary>
-        /// Trim and parse header block.
+        /// Trim and parse header token.
         /// </summary>
         /// <param name="token">Markdown Token from <see cref="AtxHeaderLexer"/></param>
         /// <returns></returns>
         public IMarkdownObject Parse(MarkdownToken token)
         {
-            var match = _contentParser.Match(token.Content);
+            if (!(token is MarkdownLeafBlock leafBlock))
+            {
+                throw new InvalidOperationException("Only parses leaf-blocks.");
+            }
+
+            var match = _contentParser.Match(leafBlock.Content);
 
             // missing groups, aka index out of bounds, here would mean parser is malfunctioning
             int level = match.Groups[1].Length;

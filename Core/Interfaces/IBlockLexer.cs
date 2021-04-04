@@ -1,5 +1,4 @@
-﻿using Markdown2HTML.Core.Engines;
-using Markdown2HTML.Core.Tokens;
+﻿using Markdown2HTML.Core.Tokens;
 
 namespace Markdown2HTML.Core.Interfaces
 {

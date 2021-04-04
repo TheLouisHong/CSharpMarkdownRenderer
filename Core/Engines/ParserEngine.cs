@@ -9,16 +9,16 @@ using Markdown2HTML.Core.Tokens;
 
 namespace Markdown2HTML.Core.Engines
 {
-    public class ParserEngine
+    public static class ParserEngine
     {
-        private Dictionary<string, IMarkdownTokenParser> _markdownTokenParsers = new Dictionary<string, IMarkdownTokenParser>();
+        private static Dictionary<string, IMarkdownTokenParser> _markdownTokenParsers = new Dictionary<string, IMarkdownTokenParser>();
 
-        public ParserEngine()
+        static ParserEngine()
         {
-            InitParsers();
+            CollectParsers();
         }
 
-        public List<IMarkdownObject> Parse(List<MarkdownToken> tokens)
+        public static List<IMarkdownObject> Parse(List<MarkdownToken> tokens)
         {
             var results = new List<IMarkdownObject>();
 
@@ -47,7 +47,7 @@ namespace Markdown2HTML.Core.Engines
             return results;
         }
 
-        void InitParsers()
+        private static void CollectParsers()
         {
             // get class that inherits from IBlockLexer and has BlockLexerAttribute
             var blockLexersTypes =
@@ -66,7 +66,7 @@ namespace Markdown2HTML.Core.Engines
 
         }
 
-        private void LogObjects(IEnumerable<IMarkdownObject> mdObjects)
+        private static void LogObjects(IEnumerable<IMarkdownObject> mdObjects)
         {
             var sb = new StringBuilder();
             foreach (var mdObj in mdObjects)

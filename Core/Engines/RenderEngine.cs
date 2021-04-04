@@ -8,17 +8,17 @@ using Markdown2HTML.Core.Interfaces;
 
 namespace Markdown2HTML.Core.Engines
 {
-    public class RenderEngine
+    public static class RenderEngine
     {
-        private Dictionary<Type, IMarkdownObjectRenderer> _renderers 
+        private static Dictionary<Type, IMarkdownObjectRenderer> _renderers 
             = new Dictionary<Type, IMarkdownObjectRenderer>();
 
-        public RenderEngine()
+        static RenderEngine()
         {
-            InitRenderEngine();
+            CollectRenderEngine();
         }
 
-        public string Render(List<IMarkdownObject> markdownObjects)
+        public static string Render(List<IMarkdownObject> markdownObjects)
         {
             StringBuilder output = new StringBuilder();
 
@@ -37,7 +37,7 @@ namespace Markdown2HTML.Core.Engines
             return output.ToString();
         }
 
-        void InitRenderEngine()
+        private static void CollectRenderEngine()
         {
             // get class that inherits from IBlockLexer and has BlockLexerAttribute
             var blockLexersTypes =

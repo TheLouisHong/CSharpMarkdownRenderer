@@ -1,5 +1,4 @@
 ﻿using System;
-using Markdown2HTML.Core;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.Interfaces;
 using Markdown2HTML.InlineRenderers;

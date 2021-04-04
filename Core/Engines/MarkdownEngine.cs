@@ -17,13 +17,10 @@ namespace Markdown2HTML.Core.Engines
 
         public string MarkdownToHtmlString(string markdownString)
         {
-            var lexer = new LexerEngine();
-            var parser = new ParserEngine();
-            var renderer = new RenderEngine();
 
-            List<MarkdownToken> mdTokens = lexer.Lex(markdownString);
-            List<IMarkdownObject> mdObjs = parser.Parse(mdTokens);
-            string renderedHtml = renderer.Render(mdObjs);
+            List<MarkdownToken> mdTokens = LexerEngine.Lex(markdownString);
+            List<IMarkdownObject> mdObjs = ParserEngine.Parse(mdTokens);
+            string renderedHtml = RenderEngine.Render(mdObjs);
             return renderedHtml;
         }
 

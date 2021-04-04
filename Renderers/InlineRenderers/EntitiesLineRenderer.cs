@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
-using Markdown2HTML.Core;
 using Markdown2HTML.Core.Interfaces;
 using Newtonsoft.Json;
 

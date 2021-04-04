@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
-using System.Runtime.CompilerServices;
-using Markdown2HTML.Core;
 using Markdown2HTML.Core.Debug;
 using Markdown2HTML.Core.Engines;
 
