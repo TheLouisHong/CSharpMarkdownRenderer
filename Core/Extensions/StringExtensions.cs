@@ -37,5 +37,14 @@
         {
             return lhs[lhs.Length - 1];
         }
+
+        public static string Splice(this string lhs, int startIndexInclusive, int endIndexInclusive)
+        {
+            return lhs.Substring(startIndexInclusive,endIndexInclusive - startIndexInclusive + 1);
+        }
+        public static string SpliceRight(this string lhs, int indexInclusive)
+        {
+            return lhs.Substring(indexInclusive, lhs.Length - indexInclusive);
+        }
     }
 }

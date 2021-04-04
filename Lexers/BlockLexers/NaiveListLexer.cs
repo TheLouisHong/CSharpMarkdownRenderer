@@ -5,6 +5,7 @@ using Markdown2HTML.Core;
 using Markdown2HTML.Core.Algorithms;
 using Markdown2HTML.Core.Attributes;
 using Markdown2HTML.Core.Engines;
+using Markdown2HTML.Core.Extensions;
 using Markdown2HTML.Core.Interfaces;
 using Markdown2HTML.Core.Tokens;
 
@@ -176,151 +177,201 @@ namespace Markdown2HTML.Lexers.BlockLexers
             //     empty_line: incoming content is white-space line, record streak. lex line. transition.
             //     finished: matches no other state, exiting state.
 
-            var states = new List<DescreteState<ListItemData>>();
+            var states = new List<DescreteState<ItemData>>();
             states.Add(new BulletLine_State());
-            states.Add(new ContentLine_State());
-            states.Add(new EmptyLine_State());
-            states.Add(new Finished_State());
-            var lexStateMachine = new BlindDescreteStateMachine<ListItemData>(states);
+            states.Add(new LooseContentLine_State());
+            states.Add(new EmptyLines_State());
 
-            var bootData = new ListItemData
+            var lexStateMachine = new BlindDescreteStateMachine<ItemData>(states);
+
+            var data = new ItemData
             {
-                BulletPadding = 0,
-                EmptyLineStreak = 0,
-                MarkdownString = markdownString
+                LegalPadding = 0,
+                IsTight = true,
+                MarkdownString = markdownString,
+                PrecededByEmpty = false
             };
 
-            var success = lexStateMachine.Run(bootData); // start lexing
-            if (!success)
+            lexStateMachine.Run(ref data); // state machine lexing
+
+            var leftOver = data.MarkdownString;
+
+            var consumedLength = markdownString.Length - leftOver.Length;
+
+            if (consumedLength == 0)
             {
-                throw new InvalidOperationException("Failed sanity check, lexStateMachine failed on Run().");
+                return null;
             }
 
-            string lexedString;
-            if (lexStateMachine.CurrentState is Finished_State finishedState)
-            {
-                lexedString = finishedState.LeftOverMarkdownString;
-            }
-            else
-            {
-                throw new InvalidOperationException("Failed sanity check, lexStateMachine did not finish. (in limbo)");
-            }
+            var content = markdownString.Substring(0, consumedLength);
+            markdownString = markdownString.SpliceRight(consumedLength);
 
-
-            var listToken = new MarkdownLeafBlock(TokenTypeHelper.LIST, lexedString, lexedString.Length);
+            var listToken = new MarkdownLeafBlock(TokenTypeHelper.LIST_ITEM, content, content.Length);
 
             return listToken;
         }
 
-        private MarkdownToken Lex_ol(string markdownString)
+        private class BulletLine_State : DescreteState<ItemData>
         {
-            throw new System.NotImplementedException();
+            /// <summary>
+            /// group 1: left padding
+            /// group 2: bullet
+            /// group 3: right padding
+            /// group 4: line content
+            /// </summary>
+            private readonly Regex _bulletPattern = new Regex(
+                @"^(( {0,3})((?:\d{1,9}[\.\)])|([\-\*+])) +)(.*)\n?");
+
+            /// <summary>
+            /// match a line that is not empty.
+            /// </summary>
+            private readonly Regex _tightContentPattern = new Regex(
+                @"^ {0,3}[\S].*\n?");
+
+            private bool _alreadyFoundBullet = false;
+
+            public override bool Ask(ref ItemData transitionItemData)
+            {
+                // list item already has bullet
+                if (_alreadyFoundBullet)
+                {
+                    return false;
+                }
+
+                if (_bulletPattern.IsMatch(transitionItemData.MarkdownString))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            /// <summary>
+            /// lex the first line.
+            /// </summary>
+            /// <param name="data"></param>
+            /// <returns></returns>
+            public override void Run(ref ItemData data)
+            {
+                _alreadyFoundBullet = true;
+
+                var match = _bulletPattern.Match(data.MarkdownString);
+                if (!match.Success)
+                {
+                    throw new InvalidOperationException("Failed sanity check.");
+                }
+
+                data.LegalPadding = match.Groups[1].Length + match.Groups[2].Length + match.Groups[3].Length;
+
+                data.MarkdownString = data.MarkdownString.SpliceRight(match.Length);
+                // consumes all the tight lines
+                // TODO: make tight content another state, but in this case, simple hack will do.
+                while (true)
+                {
+                    if (_bulletPattern.IsMatch(data.MarkdownString))
+                    {
+                        break;
+                    }
+                    match = _tightContentPattern.Match(data.MarkdownString);
+                    if (match.Success)
+                    {
+                        data.MarkdownString = data.MarkdownString.SpliceRight(match.Length);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
         }
 
-        private class EmptyLine_State : DescreteState<ListItemData>
+        private class LooseContentLine_State : DescreteState<ItemData>
         {
-            public override bool AskForTransition(ListItemData transitionItemData)
+            private readonly Regex _looseContentRegex = new Regex(
+                @"^[\s]*([\S]+).*\n?");
+
+            public override bool Ask(ref ItemData data)
             {
-                throw new NotImplementedException();
+                if (!data.PrecededByEmpty)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < data.LegalPadding; i++)
+                {
+                    if (data.MarkdownString[i] != ' ')
+                    {
+                        return false;
+                    }
+                }
+
+                if (_looseContentRegex.IsMatch(data.MarkdownString))
+                {
+                    return true;
+                }
+
+                return false;
             }
 
-            public override void OnEnter(ListItemData transitionItemData)
+            public override void Run(ref ItemData data)
             {
-                throw new NotImplementedException();
+                var match = _looseContentRegex.Match(data.MarkdownString);
+                while (match.Success)
+                {
+                    data.MarkdownString = data.MarkdownString.SpliceRight(match.Length);
+                    match = _looseContentRegex.Match(data.MarkdownString);
+                }
             }
 
-            public override void Update()
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnExit()
-            {
-                throw new NotImplementedException();
-            }
         }
 
-        private class ContentLine_State : DescreteState<ListItemData>
+        private class EmptyLines_State : DescreteState<ItemData>
         {
-            public override bool AskForTransition(ListItemData transitionItemData)
+            /// <summary>
+            /// double negative, all white except newline
+            /// </summary>
+            private readonly Regex _emptyLineRegex = new Regex(
+                @"^[^\S\n]*\n");
+
+            public override bool Ask(ref ItemData data)
             {
-                throw new NotImplementedException();
+                return _emptyLineRegex.IsMatch(data.MarkdownString);
             }
 
-            public override void OnEnter(ListItemData transitionItemData)
+            public override void Run(ref ItemData data)
             {
-                throw new NotImplementedException();
-            }
-
-            public override void Update()
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnExit()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        private class BulletLine_State : DescreteState<ListItemData>
-        {
-            public override bool AskForTransition(ListItemData transitionItemData)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnEnter(ListItemData transitionItemData)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void Update()
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnExit()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        private class Finished_State : DescreteState<ListItemData>
-        {
-            public string LeftOverMarkdownString = null;
-            public override bool AskForTransition(ListItemData transitionData)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnEnter(ListItemData transitionData)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void Update()
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnExit()
-            {
-                throw new NotImplementedException();
+                var match = _emptyLineRegex.Match(data.MarkdownString);
+                if (match.Success)
+                {
+                    data.MarkdownString = data.MarkdownString.SpliceRight(match.Length);
+                    data.PrecededByEmpty = true;
+                    data.IsTight = false;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Failed sanity check.");
+                }
             }
         }
     }
 
 
-    public struct ListItemData
+    public struct ItemData
     {
-        
+
         public string MarkdownString;
 
-        public int BulletPadding;
+        public int LegalPadding;
 
-        public int EmptyLineStreak;
+        public bool PrecededByEmpty;
 
+        public bool IsTight;
+
+        public override string ToString()
+        {
+            return MarkdownString;
+        }
     }
 
 }

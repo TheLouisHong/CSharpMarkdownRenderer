@@ -4,30 +4,27 @@ using System.Text;
 
 namespace Markdown2HTML.Core.Algorithms
 {
-    public abstract class DescreteState<TTransitionData>
+    public abstract class DescreteState<TData>
     {
-        private BlindDescreteStateMachine<TTransitionData> _stateMachine;
+        private BlindDescreteStateMachine<TData> _stateMachine;
 
-        public abstract bool AskForTransition(TTransitionData transitionData);
-
-        public abstract void OnEnter(TTransitionData transitionData);
-        public abstract void Update();
-        public abstract void OnExit();
+        public abstract bool Ask(ref TData data);
+        public abstract void Run(ref TData data);
 
     }
 
-    public class BlindDescreteStateMachine<TTransitionData>
+    public class BlindDescreteStateMachine<TData>
     {
         public readonly bool DebugTracking;
-        public readonly List<Tuple<DescreteState<TTransitionData>, TTransitionData>> _stateHistory = new List<Tuple<DescreteState<TTransitionData>, TTransitionData>>();
+        public readonly List<Tuple<DescreteState<TData>, TData>> _stateHistory = new List<Tuple<DescreteState<TData>, TData>>();
 
-        private readonly List<DescreteState<TTransitionData>> _statesInOrder;
-        private DescreteState<TTransitionData> _currentState;
+        private readonly List<DescreteState<TData>> _statesInOrder;
+        private DescreteState<TData> _currentState;
 
-        public DescreteState<TTransitionData> CurrentState => _currentState;
+        public DescreteState<TData> CurrentState => _currentState;
 
         public BlindDescreteStateMachine(
-            List<DescreteState<TTransitionData>> statesInOrder, 
+            List<DescreteState<TData>> statesInOrder, 
             bool debugTracking = false)
         {
             DebugTracking = debugTracking;
@@ -40,38 +37,28 @@ namespace Markdown2HTML.Core.Algorithms
 
         }
 
-        public bool Run(TTransitionData bootTransitionData)
+        public void Run(ref TData data)
         {
-            return TryTransition(bootTransitionData);
-        }
-
-        public bool TryTransition(TTransitionData transitionData)
-        {
-            // try each state, in order
-            foreach (var potentialState in _statesInOrder)
+            while (true)
             {
-                // ... can this state be transitioned?
-                if (potentialState.AskForTransition(transitionData))
+                var finished = true;
+                foreach (var state in _statesInOrder)
                 {
-                    // yes.
-
-                    // debug tracking
-                    if (DebugTracking)
+                    if (state.Ask(ref data))
                     {
-                        _stateHistory.Add(new Tuple<DescreteState<TTransitionData>, TTransitionData>(potentialState, transitionData));
+                        state.Run(ref data);
+                        finished = false;
+                        break;
                     }
+                }
 
-                    // exit previous state.
-                    _currentState.OnExit();
-                    // new state.
-                    _currentState = potentialState;
-                    // enter new state.
-                    potentialState.OnEnter(transitionData);
-                    return true;
+                if (finished)
+                {
+                    break;
                 }
             }
-            return false;
         }
+
 
         public override string ToString()
         {
