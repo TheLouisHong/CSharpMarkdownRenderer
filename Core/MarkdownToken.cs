@@ -20,7 +20,7 @@
         }
         public override string ToString()
         {
-            return $"TokenType: {TokenType}\n RawLength: {RawLength}";
+            return $"TokenType: {TokenType}\nRawLength: {RawLength}";
         }
     }
 }

@@ -86,14 +86,12 @@ namespace Markdown2HTML.InlineRenderers
         /// <summary>
         /// Entities recognized by the HTML Spec 
         /// https://html.spec.whatwg.org/entities.json
-        /// TODO Move entity file path to a config file for easy access.
+        /// TODO Move entity file path to a config folder for easy access.
         /// </summary>
         private const string _entitiesFilePath = "entities.json";
         
         private class JsonEntity
         {
-            //[JsonProperty("codepoints")]
-            //public string CodePoint;
             [JsonProperty("characters")]
             public string Character;
         }

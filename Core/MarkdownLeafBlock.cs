@@ -14,7 +14,7 @@
         }
         public override string ToString()
         {
-            return $"TokenType: {TokenType}\n Content: {Content}\n RawLength: {RawLength}";
+            return $"TokenType: {TokenType}\nContent:\n\"{Content}\"\nRawLength: {RawLength}";
         }
 
     }

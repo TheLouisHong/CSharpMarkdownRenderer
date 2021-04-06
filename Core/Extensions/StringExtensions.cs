@@ -1,4 +1,8 @@
-﻿namespace Markdown2HTML.Core.Extensions
+﻿
+using System.Linq;
+using System.Text;
+
+namespace Markdown2HTML.Core.Extensions
 {
     public static class StringExtensions
     {
@@ -45,6 +49,48 @@
         public static string SpliceRight(this string lhs, int indexInclusive)
         {
             return lhs.Substring(indexInclusive, lhs.Length - indexInclusive);
+        }
+
+        public static string Indent(this string lhs, int padding, char padChar = ' ')
+        {
+            var lines = lhs.Split('\n');
+            var sb = new StringBuilder();
+            foreach (var line in lines)
+            {
+                for (int i = 0; i < padding; i++)
+                {
+                    sb.Append(padChar);
+                }
+                sb.AppendLine(line);
+            }
+
+            return sb.ToString();
+        }
+
+        public static string TruncatePerLine(string render)
+        {
+            var lines = render.Split('\n');
+
+            // 2. trim whitespace and newlines per line
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i];
+                line = line.Trim('\n', ' '); // BUG does enot trim unicode whitespace
+                lines[i] = line;
+            }
+
+
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < lines.Length - 1; i++)
+            {
+                sb.AppendLine(lines[i]);
+            }
+
+            sb.Append(lines.Last());
+
+            render = sb.ToString();
+            return render;
         }
     }
 }

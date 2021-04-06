@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Algorithms\BlindDescreteStateMachine.cs" />
+    <Compile Include="Core\Algorithms\ConditionalDescreteStateMachine.cs" />
     <Compile Include="Core\Attributes\BlockLexerAttribute.cs" />
     <Compile Include="Core\Attributes\MarkdownObjectRendererAttribute.cs" />
     <Compile Include="Core\Attributes\MarkdownTokenParserAttribute.cs" />
@@ -62,6 +63,11 @@
     <Compile Include="Core\MarkdownContainerBlock.cs" />
     <Compile Include="Core\MarkdownLeafBlock.cs" />
     <Compile Include="Core\MarkdownToken.cs" />
+    <Compile Include="Lexers\BlockLexers\ListLexerStateMachine.cs" />
+    <Compile Include="Parsers\FlatListParser.cs" />
+    <Compile Include="Parsers\TightListItemParser.cs" />
+    <Compile Include="Renderers\OrderedListRenderer.cs" />
+    <Compile Include="Renderers\UnorderedListRenderer.cs" />
     <Compile Include="Renderers\InlineRenderers\EmphStrongInlineRenderer.cs" />
     <Compile Include="Renderers\InlineRenderers\EntitiesLineRenderer.cs" />
     <Compile Include="Renderers\InlineRenderers\brInlineRenderer.cs" />
@@ -71,7 +77,7 @@
     <Compile Include="Core\Engines\MarkdownEngine.cs" />
     <Compile Include="Core\Engines\ParserEngine.cs" />
     <Compile Include="Lexers\BlockLexerOrderHelper.cs" />
-    <Compile Include="Lexers\BlockLexers\NaiveListLexer.cs" />
+    <Compile Include="Lexers\BlockLexers\FlatListLexer.cs" />
     <Compile Include="Lexers\BlockLexers\EmptyLineLexer.cs" />
     <Compile Include="Lexers\BlockLexers\ParagraphLexer.cs" />
     <Compile Include="Parsers\AtxHeaderParser.cs" />

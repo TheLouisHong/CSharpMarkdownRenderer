@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Markdown2HTML.Core.Attributes;
+using Markdown2HTML.Core.Extensions;
 using Markdown2HTML.Core.Interfaces;
 using Markdown2HTML.InlineRenderers;
 using Markdown2HTML.Parsers;
@@ -26,7 +27,7 @@ namespace Markdown2HTML.Renderers
 
                 render = _brInline.Render(render);
                 render = _emphInlineRenderer.Render(render);
-                render = TruncatePerLine(render);
+                render = StringExtensions.TruncatePerLine(render);
 
                 return $"<p>{render}</p>";
             }
@@ -36,30 +37,5 @@ namespace Markdown2HTML.Renderers
             }
         }
 
-        private static string TruncatePerLine(string render)
-        {
-            var lines = render.Split('\n');
-
-            // 2. trim whitespace and newlines per line
-            for (var i = 0; i < lines.Length; i++)
-            {
-                var line = lines[i];
-                line = line.Trim('\n', ' '); // BUG does enot trim unicode whitespace
-                lines[i] = line;
-            }
-
-
-            var sb = new StringBuilder();
-
-            for (int i = 0; i < lines.Length - 1; i++)
-            {
-                sb.AppendLine(lines[i]);
-            }
-
-            sb.Append(lines.Last());
-
-            render = sb.ToString();
-            return render;
-        }
     }
 }

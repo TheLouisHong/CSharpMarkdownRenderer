@@ -6,28 +6,28 @@ namespace Markdown2HTML.Core.Algorithms
 {
     public abstract class DescreteState<TData>
     {
-        private BlindDescreteStateMachine<TData> _stateMachine;
+        private ConditionalDescreteStateMachine<TData> _stateMachine;
 
         public abstract bool Ask(ref TData data);
         public abstract void Run(ref TData data);
 
     }
 
-    public class BlindDescreteStateMachine<TData>
+    public class ConditionalDescreteStateMachine<TData>
     {
-        public readonly bool DebugTracking;
-        public readonly List<Tuple<DescreteState<TData>, TData>> _stateHistory = new List<Tuple<DescreteState<TData>, TData>>();
+        //public readonly bool DebugTracking;
+        //public readonly List<Tuple<DescreteState<TData>, TData>> _stateHistory = new List<Tuple<DescreteState<TData>, TData>>();
 
         private readonly List<DescreteState<TData>> _statesInOrder;
         private DescreteState<TData> _currentState;
 
         public DescreteState<TData> CurrentState => _currentState;
 
-        public BlindDescreteStateMachine(
+        public ConditionalDescreteStateMachine(
             List<DescreteState<TData>> statesInOrder, 
             bool debugTracking = false)
         {
-            DebugTracking = debugTracking;
+            //DebugTracking = debugTracking;
             _statesInOrder = statesInOrder;
 
             if (statesInOrder == null)
@@ -71,6 +71,7 @@ namespace Markdown2HTML.Core.Algorithms
             }
             sb.AppendLine($"{_statesInOrder[_statesInOrder.Count - 1].GetType().Name}}}");
 
+            /*
             if (DebugTracking)
             {
                 sb.AppendLine("History: ");
@@ -83,6 +84,7 @@ namespace Markdown2HTML.Core.Algorithms
                 var lastRow = _stateHistory[_stateHistory.Count - 1];
                     sb.AppendLine($"{lastRow.Item1.GetType().Name} : {lastRow.Item2}");
             }
+            */
 
             return sb.ToString();
         }

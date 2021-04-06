@@ -78,11 +78,11 @@ namespace Markdown2HTML.Lexers.BlockLexers
         /// Header interrupts paragraphs. Use header lexer to check for interrupts.
         /// </summary>
         private readonly AtxHeaderLexer _headerInterrupt = new AtxHeaderLexer();
+
         /// <summary>
         /// List interrupts paragraphs. Use header lexer to check for interrupts.
         /// </summary>
-
-        private readonly NaiveListLexer _naiveListLexer = new NaiveListLexer();
+        private readonly FlatListLexer _flatListLexer = new FlatListLexer();
 
         /// <summary>
         /// Lex paragraphs.
@@ -174,10 +174,15 @@ namespace Markdown2HTML.Lexers.BlockLexers
             {
                 return true;
             }
-            else if (_naiveListLexer.Lex(markdownString) != null)
-            {
-                return true;
-            }
+
+            // This is commented out:
+            // Specifically because Bungie does not want Lists to interrupt paragraphs.
+            // This breaks CommonMark compliance. 
+            // if (_flatListLexer.Lex(markdownString) != null)
+            // {
+            //     return true;
+            // }
+
             return false;
         }
     }
