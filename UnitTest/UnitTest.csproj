@@ -62,8 +62,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Markdown2HTML.csproj">
-      <Project>{2fc22864-785f-4349-a794-d01c3311c1dd}</Project>
+    <ProjectReference Include="..\Markdown2HTML\Markdown2HTML.csproj">
+      <Project>{0b7e9b43-2f14-4159-b9d3-df96fedb8c7a}</Project>
       <Name>Markdown2HTML</Name>
     </ProjectReference>
   </ItemGroup>
