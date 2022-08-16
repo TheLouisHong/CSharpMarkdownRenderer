@@ -1,0 +1,22 @@
+Lists
+-Markdown---------------------
+1. foo
+2. bar
+3) baz
+
+-Mine-------------------------
+<ol start="1">
+<li>foo</li>
+<li>bar</li>
+<li>baz</li>
+</ol>
+
+-Example----------------------
+<ol>
+<li>foo</li>
+<li>bar</li>
+</ol>
+<ol start="3">
+<li>baz</li>
+</ol>
+

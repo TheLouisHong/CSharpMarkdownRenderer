@@ -18,7 +18,7 @@ TODO nested list not supported
 
 3. Lists also have requirement for content the follows the bullet point. 
    1. It must be padded correctly
-   2. Bullet points must remain consistent. (our our purposes, Bungie does not require this it for unordered lists according to the example provided.)
+   2. Bullet points must remain consistent. (TODO Louis: This is not implemented for unordered lists.)
 
                (the above list is a loose list because of the new line between 1. and 2. and 3.)
 

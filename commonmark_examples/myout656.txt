@@ -1,0 +1,15 @@
+Louis
+-Markdown---------------------
+*This is italicized*, and so is _this_, but this is __bold__ (just like **this is**). 
+***This is bold and italacized.*** And how about *some italic __mixed with some bold__?*
+
+how about a *** this is italic * this is bold* this is both *.
+
+how about unclosed delimeters? *** like this ** ___ and this __?
+-Mine-------------------------
+<p><em>This is italicized</em>, and so is <em>this</em>, but this is <strong>bold</strong> (just like <strong>this is</strong>).
+<em><strong>This is bold and italacized.</strong></em> And how about <em>some italic <strong>mixed with some bold</strong>?</em></p>
+<p>how about a *** this is italic * this is bold* this is both *.</p>
+<p>how about unclosed delimeters? *** like this ** ___ and this __?</p>
+-Example----------------------
+

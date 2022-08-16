@@ -1,0 +1,10 @@
+Emphasis and strong emphasis
+-Markdown---------------------
+**foo [*bar*](/url)**
+
+-Mine-------------------------
+<p><strong>foo [<em>bar</em>](/url)</strong></p>
+
+-Example----------------------
+<p><strong>foo <a href="/url"><em>bar</em></a></strong></p>
+

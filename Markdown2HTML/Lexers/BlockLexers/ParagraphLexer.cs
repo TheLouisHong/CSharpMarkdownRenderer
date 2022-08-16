@@ -20,7 +20,7 @@ namespace Markdown2HTML.Lexers.BlockLexers
     ///  3.2 heading
     ///  3.3 blockquote
     ///  3.4 fences
-    ///  3.5 list (bungie specifically did not want list to interrupt through the example provided)
+    ///  3.5 list (Louis: list do not interrupt in this implementation)
     ///  3.5 html
     ///  3.6 whitespace line
     ///  3.7 double newline
@@ -178,7 +178,8 @@ namespace Markdown2HTML.Lexers.BlockLexers
             }
 
             // This is commented out:
-            // Specifically because Bungie does not want Lists to interrupt paragraphs.
+            // Louis: Specifically do not want Lists to interrupt paragraphs.
+            // Uncomment the following if you want to allow lists to interrupt paragraphs.
             // This breaks CommonMark compliance. 
             // if (_flatListLexer.Lex(markdownString) != null)
             // {

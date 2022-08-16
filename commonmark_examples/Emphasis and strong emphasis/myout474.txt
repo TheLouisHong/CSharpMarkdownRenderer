@@ -1,0 +1,10 @@
+Emphasis and strong emphasis
+-Markdown---------------------
+*<img src="foo" title="*"/>
+
+-Mine-------------------------
+<p><em>&lt;img src=&quot;foo&quot; title=&quot;</em>&quot;/&gt;</p>
+
+-Example----------------------
+<p>*<img src="foo" title="*"/></p>
+

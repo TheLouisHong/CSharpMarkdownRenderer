@@ -1,0 +1,71 @@
+-Markdown---------------------
+*This is italicized*, and so is _this_, but this is __bold__ (just like **this is**).
+And how about *some italic __mixed with some bold__?*
+
+# Header 1
+- Use a minus sign for a bullet
++ Or plus sign
+* Or an asterisk
+
+Here is an ampersand: 'AT&T'
+and then a less-than 'x < y'
+
+But let's permit things like &copy; (the copyright symbol) as-is in a primitive way.
+
+1. Numbered lists are easy
+1. Markdown keeps track of the numbers for you
+7. So this will be item 3.
+
+### Header 3 ###
+
+Btw this should be on a single line
+- not as an unordered list
+- and not as an ordered list either
+-Mine-------------------------
+<p><em>This is italicized</em>, and so is <em>this</em>, but this is <strong>bold</strong> (just like <strong>this is</strong>).
+And how about <em>some italic <strong>mixed with some bold</strong>?</em></p>
+<h1>Header 1</h1>
+<ul>
+<li>Use a minus sign for a bullet</li>
+<li>Or plus sign</li>
+<li>Or an asterisk</li>
+</ul>
+<p>Here is an ampersand: &#39;AT&amp;T&#39;
+and then a less-than &#39;x &lt; y&#39;</p>
+<p>But let&#39;s permit things like © (the copyright symbol) as-is in a primitive way.</p>
+<ol start="1">
+<li>Numbered lists are easy</li>
+<li>Markdown keeps track of the numbers for you</li>
+<li>So this will be item 3.</li>
+</ol>
+<h3>Header 3</h3>
+
+<p>Btw this should be on a single line
+- not as an unordered list
+- and not as an ordered list either</p>
+-Example----------------------
+<p><em>This is italicized</em>, and so is <em>this</em>, but this is <strong>bold</strong> (just like <strong>this is</strong>).
+And how about <em>some italic <strong>mixed with some bold</strong>?</em></p>
+
+<h1>Header 1</h1>
+
+<ul>
+<li>Use a minus sign for a bullet</li>
+<li>Or plus sign</li>
+<li>Or an asterisk</li>
+</ul>
+
+<p>Here is an ampersand: 'AT&amp;T'
+and then a less-than 'x &lt; y'</p>
+
+<p>But let's permit things like &copy; (the copyright symbol) as-is in a primitive way.</p>
+
+<ol>
+<li>Numbered lists are easy</li>
+<li>Markdown keeps track of the numbers for you</li>
+<li>So this will be item 3.</li>
+</ol>
+
+<h3>Header 3</h3>
+
+<p>Btw this should be on a single line</p>

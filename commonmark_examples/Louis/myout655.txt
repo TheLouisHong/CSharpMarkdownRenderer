@@ -1,0 +1,17 @@
+Louis
+-Markdown---------------------
+&copy;&copy; copyright symbol
+&lt;&lt; should not touch, already valid
+&amp;&amp; should not touch, already valid
+&notarealcode;&notarealcode; treat as normal text
+&#0000;&#0000; illegal null unicode, replace with \uFFFD
+&#38;&#38; unicode version of ampersand, should be replaced with &amp;
+-Mine-------------------------
+<p>©© copyright symbol
+&lt;&lt; should not touch, already valid
+&amp;&amp; should not touch, already valid
+&amp;notarealcode;&amp;notarealcode; treat as normal text
+�� illegal null unicode, replace with \uFFFD
+&amp;&amp; unicode version of ampersand, should be replaced with &amp;</p>
+-Example----------------------
+

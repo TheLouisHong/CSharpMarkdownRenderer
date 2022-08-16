@@ -1,0 +1,16 @@
+ATX headings
+-Markdown---------------------
+Foo bar
+# baz
+Bar foo
+
+-Mine-------------------------
+<p>Foo bar
+</p><h1>baz</h1>
+<p>Bar foo</p>
+
+-Example----------------------
+<p>Foo bar</p>
+<h1>baz</h1>
+<p>Bar foo</p>
+

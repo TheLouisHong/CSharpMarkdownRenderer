@@ -1,0 +1,23 @@
+Lists
+-Markdown---------------------
+1. ```
+   foo
+   ```
+
+   bar
+
+-Mine-------------------------
+<ol start="1">
+<li>```</li>
+</ol>
+<p>bar</p>
+
+-Example----------------------
+<ol>
+<li>
+<pre><code>foo
+</code></pre>
+<p>bar</p>
+</li>
+</ol>
+

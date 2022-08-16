@@ -195,7 +195,8 @@ namespace UnitTest
         public UnitTestCommonMark()
         {
             driver = new UnitTestDriver();
-            Directory.SetCurrentDirectory(@"C:\_Active Projects\Software Projects\Bungie-Interview-2021\Project 2 Markdown2HTML\Markdown2HTML\");
+            // set current directory to root of solution
+            Directory.SetCurrentDirectory(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\")));
             driver.LoadTestCase();
         }
 
@@ -227,12 +228,6 @@ namespace UnitTest
         public void TestMethodLouis()
         {
             driver.RunTestBySection("Louis");
-        }
-
-        [TestMethod]
-        public void TestMethodBungie()
-        {
-            driver.RunTestBySection("Bungie");
         }
     }
 }

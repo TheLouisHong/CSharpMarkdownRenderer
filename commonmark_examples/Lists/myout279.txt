@@ -1,0 +1,37 @@
+Lists
+-Markdown---------------------
+-   foo
+
+    notcode
+
+-   foo
+
+<!-- -->
+
+    code
+
+-Mine-------------------------
+<ul>
+<li>foo</li>
+</ul>
+<p>notcode</p>
+<ul>
+<li>foo</li>
+</ul>
+<p>&lt;!-- --&gt;</p>
+<p>code</p>
+
+-Example----------------------
+<ul>
+<li>
+<p>foo</p>
+<p>notcode</p>
+</li>
+<li>
+<p>foo</p>
+</li>
+</ul>
+<!-- -->
+<pre><code>code
+</code></pre>
+

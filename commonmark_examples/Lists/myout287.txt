@@ -1,0 +1,29 @@
+Lists
+-Markdown---------------------
+- a
+- b
+
+  [ref]: /url
+- d
+
+-Mine-------------------------
+<ul>
+<li>a</li>
+<li>b</li>
+</ul>
+<p>[ref]: /url
+- d</p>
+
+-Example----------------------
+<ul>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>d</p>
+</li>
+</ul>
+

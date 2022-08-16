@@ -1,0 +1,10 @@
+Emphasis and strong emphasis
+-Markdown---------------------
+**a<http://foo.bar/?q=**>
+
+-Mine-------------------------
+<p><strong>a&lt;http://foo.bar/?q=</strong>&gt;</p>
+
+-Example----------------------
+<p>**a<a href="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
+

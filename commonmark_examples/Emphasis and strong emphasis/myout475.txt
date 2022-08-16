@@ -1,0 +1,10 @@
+Emphasis and strong emphasis
+-Markdown---------------------
+**<a href="**">
+
+-Mine-------------------------
+<p><strong>&lt;a href=&quot;</strong>&quot;&gt;</p>
+
+-Example----------------------
+<p>**<a href="**"></p>
+

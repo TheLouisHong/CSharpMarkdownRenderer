@@ -1,0 +1,11 @@
+ATX headings
+-Markdown---------------------
+    # foo
+
+-Mine-------------------------
+<p># foo</p>
+
+-Example----------------------
+<pre><code># foo
+</code></pre>
+

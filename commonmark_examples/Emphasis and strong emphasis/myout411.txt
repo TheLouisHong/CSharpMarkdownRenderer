@@ -1,0 +1,10 @@
+Emphasis and strong emphasis
+-Markdown---------------------
+*foo**bar*
+
+-Mine-------------------------
+<p><em>foo</em><em>bar</em></p>
+
+-Example----------------------
+<p><em>foo**bar</em></p>
+
